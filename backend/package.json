@@ -23,8 +23,9 @@
 		"express-session": "^1.17.3",
 		"js-cookies": "^1.0.4",
 		"jsonwebtoken": "^9.0.1",
-		"mysql2": "^3.5.2",
+		"mysql2": "^3.10.1",
 		"nodemailer": "^6.9.4",
+		"sequelize": "^6.37.3",
 		"useragent": "^2.3.0",
 		"uuid": "^9.0.0"
 	},
