@@ -1,42 +1,52 @@
-// backend/models/Messagerie.js
+// messageries.js
 const { DataTypes } = require("sequelize");
-const sequelize = require("../config/databases");
-const Utilisateur = require("./Utilisateur");
+const sequelize = require("../config/database");
+const Utilisateur = require("./utilisateurs");
 
 const Messagerie = sequelize.define(
-	"Messagerie",
+	"messageries",
 	{
 		id: {
 			type: DataTypes.INTEGER,
-			autoIncrement: true,
 			primaryKey: true,
+			autoIncrement: true,
 		},
 		fromUserId: {
 			type: DataTypes.INTEGER,
+			allowNull: false,
 			references: {
 				model: Utilisateur,
 				key: "id",
 			},
-			allowNull: false,
 		},
 		toUserId: {
 			type: DataTypes.INTEGER,
+			allowNull: false,
 			references: {
 				model: Utilisateur,
 				key: "id",
 			},
-			allowNull: false,
 		},
 		message: {
-			type: DataTypes.STRING,
-			allowNull: false,
+			type: DataTypes.TEXT,
+			allowNull: true,
 		},
 		sentAt: {
 			type: DataTypes.DATE,
-			defaultValue: DataTypes.NOW,
+			allowNull: true,
+		},
+		createdAt: {
+			type: DataTypes.DATE,
+			defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
+		},
+		updatedAt: {
+			type: DataTypes.DATE,
+			defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
 		},
 	},
 	{
+		timestamps: true,
+		underscored: true,
 		tableName: "messageries",
 	}
 );

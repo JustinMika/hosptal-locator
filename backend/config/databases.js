@@ -7,7 +7,12 @@ const sequelize = new Sequelize(
 	process.env.DB_PASSWORD,
 	{
 		host: process.env.DB_HOST,
-		dialect: "mysql", // Ou 'postgres', 'sqlite', 'mariadb', etc.
+		dialect: "mysql",
+		port: 3306,
+		define: {
+			timestamps: true,
+			underscored: true,
+		},
 	}
 );
 

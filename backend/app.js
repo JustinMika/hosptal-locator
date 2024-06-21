@@ -2,7 +2,6 @@ const express = require("express");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const util = require("util");
 require("dotenv").config();
 const useragent = require("useragent");
 const path = require("path");
@@ -75,8 +74,10 @@ app.get("/", async (req, res) => {
 	}
 });
 
+app.use("/api/v1/auth/", require("./routes/auth/Auth"));
 app.use("/api/v1/users/", require("./routes/users/Users"));
 app.use("/api/v1/hospitals/", require("./routes/hospitals/Hospitals"));
+app.use("/api/v1/visite-site/", require("./routes/visites/visiteSites"));
 app.use("/api/v1/admin/", require("./routes/admin/Admin"));
 
 module.exports = app;

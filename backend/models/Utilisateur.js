@@ -1,35 +1,47 @@
-// backend/models/Utilisateur.js
+// utilisateurs.js
 const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
+const sequelize = require("../config/databases");
 
 const Utilisateur = sequelize.define(
-	"Utilisateur",
+	"utilisateurs",
 	{
 		id: {
 			type: DataTypes.INTEGER,
-			autoIncrement: true,
 			primaryKey: true,
+			autoIncrement: true,
 		},
 		email: {
 			type: DataTypes.STRING,
 			allowNull: false,
-			unique: true,
-		},
-		phone: {
-			type: DataTypes.STRING,
-			allowNull: false,
-			unique: true,
 		},
 		password: {
 			type: DataTypes.STRING,
 			allowNull: false,
 		},
+		latitude: {
+			type: DataTypes.DECIMAL(10, 8),
+			allowNull: true,
+		},
+		longitude: {
+			type: DataTypes.DECIMAL(11, 8),
+			allowNull: true,
+		},
 		userType: {
 			type: DataTypes.ENUM("user", "admin", "hospital"),
 			allowNull: false,
 		},
+		createdAt: {
+			type: DataTypes.DATE,
+			defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
+		},
+		updatedAt: {
+			type: DataTypes.DATE,
+			defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
+		},
 	},
 	{
+		timestamps: true,
+		underscored: true,
 		tableName: "utilisateurs",
 	}
 );
