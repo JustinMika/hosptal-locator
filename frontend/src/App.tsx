@@ -4,9 +4,7 @@ import Dashboard from "./admin/pages/Dashboard.tsx";
 import Login from "./auth/Login.tsx";
 import PageNotFound from "./error/PageNotFound.tsx";
 import CreateAccount from "./auth/CreateAccount.tsx";
-// import DashboardHosptal from "./hospitals/pages/DashboardHosptal.tsx";
 import AddHosptal from "./admin/pages/AddHosptal.tsx";
-// import UsersDashboard from "./users/pages/UsersDashboard.tsx";
 import UsersMessages from "./users/pages/UsersMessages.tsx";
 import Logout from "./users/pages/Logout.tsx";
 import Profil from "./admin/pages/Profil.tsx";
@@ -15,6 +13,10 @@ import AddUser from "./admin/pages/AddUser.tsx";
 import Users from "./admin/pages/Users.tsx";
 import Statistique from "./admin/pages/Statistique.tsx";
 import Alerte from "./admin/pages/Alerte.tsx";
+import DashboardHospital from "./hospitals/pages/DashboardHospital.tsx";
+import Messages from "./hospitals/pages/Messages.tsx";
+import HospitalProfil from "./hospitals/pages/HospitalProfil.tsx";
+import ALertesHospital from "./hospitals/pages/ALertesHospital.tsx";
 
 const App = () => {
 	return (
@@ -54,7 +56,6 @@ const App = () => {
 					errorElement={<PageNotFound />}
 				/>
 
-				{/* Hispital routes */}
 				<Route
 					path="/admin/dashboard/hopitaux/ajout-hopitaux/"
 					element={<AddHosptal />}
@@ -65,6 +66,30 @@ const App = () => {
 					element={<ListHospital />}
 					errorElement={<PageNotFound />}
 				/>
+				{/* END Admin routes */}
+
+				{/* hospitals routes */}
+				<Route
+					path="/hosptal/dashboard/"
+					element={<DashboardHospital />}
+					errorElement={<PageNotFound />}
+				/>
+				<Route
+					path="/hosptal/dashboard/alertes-users/"
+					element={<ALertesHospital />}
+					errorElement={<PageNotFound />}
+				/>
+				<Route
+					path="/hosptal/dashboard/messagerie/"
+					element={<Messages />}
+					errorElement={<PageNotFound />}
+				/>
+				<Route
+					path="/hosptal/dashboard/profil/"
+					element={<HospitalProfil />}
+					errorElement={<PageNotFound />}
+				/>
+				{/* END hospitals routes */}
 
 				{/* users routes  */}
 				<Route
@@ -83,8 +108,14 @@ const App = () => {
 					errorElement={<PageNotFound />}
 				/>
 
+				{/* logput routes */}
 				<Route
-					path="admin/dashboard/logout"
+					path="/admin/dashboard/logout"
+					element={<Logout />}
+					errorElement={<PageNotFound />}
+				/>
+				<Route
+					path="/hosptal/dashboard/logout"
 					element={<Logout />}
 					errorElement={<PageNotFound />}
 				/>
@@ -93,6 +124,7 @@ const App = () => {
 					element={<Logout />}
 					errorElement={<PageNotFound />}
 				/>
+				{/* End users routes */}
 
 				{/* Not found route */}
 				<Route

@@ -2,9 +2,6 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const SideBar = () => {
-	const [menu1, setMenu1] = useState(false);
-	const [menu2, setMenu2] = useState(false);
-	const [menu3, setMenu3] = useState(false);
 	const [isMenuUserOpen, setisMenuUserOpen] = useState(false);
 	const [isMenu, setisMenu] = useState(false);
 
@@ -21,7 +18,6 @@ const SideBar = () => {
 								className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
 								onClick={() => {
 									setisMenu(!isMenu);
-									// dispatch(setIsMenu(!isMenu))
 								}}
 							>
 								<span className="sr-only">Open sidebar</span>
@@ -39,7 +35,10 @@ const SideBar = () => {
 									></path>
 								</svg>
 							</button>
-							<Link to={``} className="flex md:mr-24">
+							<Link
+								to={`/hosptal/dashboard/`}
+								className="flex md:mr-24"
+							>
 								<span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white uppercase flex gap-3 justify-center items-baseline hover:text-green-600 duration-100">
 									<svg
 										className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -54,110 +53,68 @@ const SideBar = () => {
 								</span>
 							</Link>
 						</div>
-						<div className="flex items-center">
-							<div className="flex items-center ml-3">
-								<div className="flex items-center justify-between">
-									<button
-										type="button"
-										className="p-2 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700"
-									>
-										<span className="sr-only">
-											View notifications
-										</span>
+						<div className="">
+							{/* menu profil user */}
+							<div className="flex items-center">
+								<button
+									onClick={() => {
+										setisMenuUserOpen(!isMenuUserOpen);
+									}}
+								>
+									<img
+										id="avatarButton"
+										data-dropdown-toggle="userDropdown"
+										data-dropdown-placement="bottom-start"
+										className="w-10 h-10 rounded-full cursor-pointer"
+										src="/docs/images/people/profile-picture-5.jpg"
+										alt="User dropdown"
+									/>
+								</button>
 
-										<svg
-											className="w-6 h-6"
-											fill="currentColor"
-											viewBox="0 0 20 20"
-											xmlns="http://www.w3.org/2000/svg"
-										>
-											<path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path>
-										</svg>
-									</button>
-
-									<button
-										type="button"
-										className="p-2 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700"
-									>
-										<svg
-											className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-											fill="none"
-											stroke="currentColor"
-											strokeWidth="1.5"
-											viewBox="0 0 24 24"
-											xmlns="http://www.w3.org/2000/svg"
-											aria-hidden="true"
-										>
-											<path
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 01-.825-.242m9.345-8.334a2.126 2.126 0 00-.476-.095 48.64 48.64 0 00-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0011.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155"
-											></path>
-										</svg>
-									</button>
-
-									<button
-										type="button"
-										className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-										onClick={() => {
-											setisMenuUserOpen(!isMenuUserOpen);
-										}}
-									>
-										<span className="sr-only">
-											Open user menu
-										</span>
-									</button>
-								</div>
+								{/* hidden */}
 								<div
+									id="userDropdown"
 									className={
 										isMenuUserOpen
 											? `absolute right-2 top-11 z-50 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 mt-5`
 											: `z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600`
 									}
 								>
-									<div className="px-4 py-3" role="none">
-										<p
-											className="text-sm text-gray-900 dark:text-white"
-											role="none"
-										>
-											{"unknown user"}
-										</p>
-										<p
-											className="text-sm font-medium text-gray-900 truncate dark:text-gray-300"
-											role="none"
-										>
-											{`user`}
-										</p>
+									<div className="px-4 py-3 text-sm text-gray-900 dark:text-white text-center">
+										<div>Justin Micah</div>
+										<div className="font-medium truncate">
+											justinmika@flowbite.com
+										</div>
 									</div>
-									<ul className="py-1" role="none">
+									<ul
+										className="py-2 text-sm text-gray-700 dark:text-gray-200"
+										aria-labelledby="avatarButton"
+									>
 										<li>
 											<Link
-												to={`/`}
-												className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-												role="menuitem"
+												to={`/hosptal/dashboard/`}
+												className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
 											>
 												Dashboard
 											</Link>
 										</li>
 										<li>
 											<Link
-												to={`/1000pharma_admin_/Profil/`}
-												className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-												role="menuitem"
+												to={`/hosptal/dashboard/profil`}
+												className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
 											>
-												Settings
-											</Link>
-										</li>
-										<li>
-											<Link
-												to={`/1000pharma_admin_/logout/`}
-												className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-												role="menuitem"
-											>
-												Sign out
+												Profil
 											</Link>
 										</li>
 									</ul>
+									<div className="py-1">
+										<Link
+											to={`/hosptal/dashboard/logout`}
+											className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+										>
+											Déconnexion
+										</Link>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -169,7 +126,7 @@ const SideBar = () => {
 					<ul className="space-y-2 font-medium">
 						<li>
 							<Link
-								to={`/`}
+								to={`/hosptal/dashboard/`}
 								className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
 							>
 								<svg
@@ -187,7 +144,7 @@ const SideBar = () => {
 						</li>
 						<li>
 							<Link
-								to={`/1000pharma_admin_/liste-des-clients/`}
+								to={`/hosptal/dashboard/alertes-users/`}
 								className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
 							>
 								<svg
@@ -206,7 +163,7 @@ const SideBar = () => {
 						</li>
 						<li>
 							<Link
-								to={`/admin/dashboard/utilisateur/messageries/`}
+								to={`/hosptal/dashboard/messagerie/`}
 								className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
 							>
 								<svg
@@ -231,7 +188,7 @@ const SideBar = () => {
 						</li>
 						<li>
 							<Link
-								to={`/1000pharma_admin_/gestion-des-utilisateurs/`}
+								to={`/hosptal/dashboard/profil/`}
 								className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
 							>
 								<svg
@@ -250,7 +207,7 @@ const SideBar = () => {
 						</li>
 						<li>
 							<Link
-								to={`/1000pharma_admin_/stocks/`}
+								to={`/hosptal/dashboard/logout`}
 								className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
 							>
 								<svg

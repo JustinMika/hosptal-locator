@@ -119,6 +119,7 @@ const SideBar = () => {
 					</div>
 				</div>
 			</nav>
+			
 			<aside className={isMenu ? open : noopen}>
 				<div className="h-full px-3 pb-4 overflow-y-hidden bg-slate-50 shadow-lg   dark:bg-gray-800">
 					<ul className="space-y-2 font-medium">

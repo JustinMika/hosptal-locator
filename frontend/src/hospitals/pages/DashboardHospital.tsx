@@ -1,11 +1,11 @@
 import axios from "axios";
-import ContentAdmin from "./../components/ContentAdmin.tsx";
+import ContentAdmin from "../components/ContentAdmin.tsx";
 import VisitesSite from "../stats/VisitesSite.tsx";
 
-const Dashboard = () => {
+const DashboardHospital = () => {
 	axios.defaults.withCredentials = true;
-	localStorage.setItem("page", "Dashboard");
-	window.document.title = "Dashboard";
+	localStorage.setItem("page", "Page d'accueil");
+	window.document.title = "Page d'accueil";
 
 	return (
 		<ContentAdmin>
@@ -16,4 +16,4 @@ const Dashboard = () => {
 	);
 };
 
-export default Dashboard;
+export default DashboardHospital;

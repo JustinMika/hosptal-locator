@@ -38,7 +38,7 @@ const Login: React.FC = () => {
 				`${getMainUrlApi()}auth/login`,
 				values
 			);
-			console.log(response?.data?.userType);
+			// console.log(response?.data?.userType);
 			const { token, userType } = response.data;
 
 			if (token && userType) {
@@ -63,7 +63,7 @@ const Login: React.FC = () => {
 				if (userType === "user") {
 					const url = `/users/dashboard`;
 					navigate(url);
-				} else if (userType === "hospital") {
+				} else if (userType === "hopital") {
 					const url = `/hosptal/dashboard/`;
 					navigate(url);
 				} else if (userType === "admin") {
@@ -157,7 +157,7 @@ const Login: React.FC = () => {
 								to="/create-acount"
 								className="text-[#039875] hover:font-bold w-full text-center justify-end"
 							>
-								créer un nouveau compte utilisateur
+								Créer un nouveau compte utilisateur
 							</Link>
 						</div>
 						<button
