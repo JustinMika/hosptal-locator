@@ -7,9 +7,7 @@ import CreateAccount from "./auth/CreateAccount.tsx";
 import AddHosptal from "./admin/pages/AddHosptal.tsx";
 import UsersMessages from "./users/pages/UsersMessages.tsx";
 import Logout from "./users/pages/Logout.tsx";
-import Profil from "./admin/pages/Profil.tsx";
 import ListHospital from "./admin/pages/ListHospital.tsx";
-import AddUser from "./admin/pages/AddUser.tsx";
 import Users from "./admin/pages/Users.tsx";
 import Statistique from "./admin/pages/Statistique.tsx";
 import Alerte from "./admin/pages/Alerte.tsx";
@@ -17,6 +15,8 @@ import DashboardHospital from "./hospitals/pages/DashboardHospital.tsx";
 import Messages from "./hospitals/pages/Messages.tsx";
 import HospitalProfil from "./hospitals/pages/HospitalProfil.tsx";
 import ALertesHospital from "./hospitals/pages/ALertesHospital.tsx";
+import UsersDashboard from "./users/pages/UsersDashboard.tsx";
+import UserProfile from "./users/pages/UserProfile.tsx";
 
 const App = () => {
 	return (
@@ -70,22 +70,22 @@ const App = () => {
 
 				{/* hospitals routes */}
 				<Route
-					path="/hosptal/dashboard/"
+					path="/hospital/dashboard/"
 					element={<DashboardHospital />}
 					errorElement={<PageNotFound />}
 				/>
 				<Route
-					path="/hosptal/dashboard/alertes-users/"
+					path="/hospital/dashboard/alertes-users/"
 					element={<ALertesHospital />}
 					errorElement={<PageNotFound />}
 				/>
 				<Route
-					path="/hosptal/dashboard/messagerie/"
+					path="/hospital/dashboard/messagerie/"
 					element={<Messages />}
 					errorElement={<PageNotFound />}
 				/>
 				<Route
-					path="/hosptal/dashboard/profil/"
+					path="/hospital/dashboard/profil/"
 					element={<HospitalProfil />}
 					errorElement={<PageNotFound />}
 				/>
@@ -93,18 +93,18 @@ const App = () => {
 
 				{/* users routes  */}
 				<Route
-					path="/admin/dashboard/utilisateurs/ajout-utilisateurs"
-					element={<AddUser />}
+					path="/users/dashboard/"
+					element={<UsersDashboard />}
 					errorElement={<PageNotFound />}
 				/>
 				<Route
-					path="/admin/dashboard/utilisateurs/liste-utilisateurs"
+					path="/users/messagerie/:uuid"
 					element={<UsersMessages />}
 					errorElement={<PageNotFound />}
 				/>
 				<Route
-					path="/admin/dashboard/utilisateur/profil-utilisateur"
-					element={<Profil />}
+					path="/users/profil/:uuid"
+					element={<UserProfile />}
 					errorElement={<PageNotFound />}
 				/>
 
@@ -115,7 +115,7 @@ const App = () => {
 					errorElement={<PageNotFound />}
 				/>
 				<Route
-					path="/hosptal/dashboard/logout"
+					path="/hospital/dashboard/logout"
 					element={<Logout />}
 					errorElement={<PageNotFound />}
 				/>

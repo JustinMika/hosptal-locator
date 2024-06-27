@@ -1,3 +1,4 @@
+import { Avatar } from "flowbite-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -14,7 +15,7 @@ const SideBar = () => {
 			<nav className="fixed top-0 right-0 left-0 z-50 w-full bg-slate-100 border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
 				<div className="px-3 py-3 lg:px-5 lg:pl-3">
 					<div className="flex items-center justify-between">
-						<div className="flex items-center justify-start">
+						<div className="flex items-baseline justify-start gap-4">
 							<button
 								type="button"
 								className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
@@ -37,7 +38,7 @@ const SideBar = () => {
 									></path>
 								</svg>
 							</button>
-							<Link to={``} className="flex md:mr-24">
+							<Link to={`#`} className="flex md:mr-24">
 								<span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white uppercase flex gap-3 justify-center items-baseline hover:text-green-600 duration-100">
 									<svg
 										className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -52,21 +53,22 @@ const SideBar = () => {
 								</span>
 							</Link>
 						</div>
-
 						{/* menu profil user */}
 						<div className="flex items-center">
 							<button
+								type="button"
+								className="flex mr-3 text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+								id="user-menu-button"
+								aria-expanded="true"
+								data-dropdown-placement="bottom"
 								onClick={() => {
 									setisMenuUserOpen(!isMenuUserOpen);
 								}}
 							>
-								<img
-									id="avatarButton"
-									data-dropdown-toggle="userDropdown"
-									data-dropdown-placement="bottom-start"
-									className="w-10 h-10 rounded-full cursor-pointer"
-									src="/docs/images/people/profile-picture-5.jpg"
-									alt="User dropdown"
+								<Avatar
+									status="online"
+									rounded
+									className="border border-gray-500 rounded-full"
 								/>
 							</button>
 
@@ -119,7 +121,7 @@ const SideBar = () => {
 					</div>
 				</div>
 			</nav>
-			
+
 			<aside className={isMenu ? open : noopen}>
 				<div className="h-full px-3 pb-4 overflow-y-hidden bg-slate-50 shadow-lg   dark:bg-gray-800">
 					<ul className="space-y-2 font-medium">

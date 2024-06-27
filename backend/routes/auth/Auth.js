@@ -22,6 +22,10 @@ const verifyToken = (req, res, next) => {
 	}
 };
 
+router.get("check-login", async (req, res, next) => {
+	res.send("Okey");
+});
+
 router.post("/register", async (req, res) => {
 	const { name, email, password } = req.body;
 	const userType = "user";

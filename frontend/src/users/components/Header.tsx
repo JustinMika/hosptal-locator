@@ -5,32 +5,24 @@ const Header = () => {
 	const selector = {
 		isConnected: true,
 		uuid: "uuid",
-		name: "header",
-		email: "email",
+		name: "Justin Micah",
+		email: "username@yourdomaine.com",
 	};
-
-	const [isUserConnected] = useState(false);
 
 	const [isMenuOpen, setIsMenuOpen] = useState<boolean>(true);
 	const [isMenuUserOpen, setisMenuUserOpen] = useState<boolean>(false);
 
-	const [] = useState<Array<string> | null>(null);
-
-	const normaluser = `mx-auto shadow-md border-b border-gray-100 fixed  w-full top-0 right-0 left-0 z-[500] mb-5 bg-white`;
+	const normaluser = `mx-auto_ shadow-md border-b border-gray-100 z-[500] mb-5 bg-white`;
 	return (
 		<div className="w-full z-[500] bg-white">
 			<div className={normaluser}>
-				<nav className="mx-auto w-11/12 md:w-4/5 bg-white border-gray-200 dark:bg-gray-900">
-					<div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-						<Link to="/" className="flex items-center">
-							<img
-								src={""}
-								className="w-12 h-8- mr-3"
-								alt="1000pharma logo"
-							/>
+				<nav className="mx-auto w-full bg-white border-gray-200 dark:bg-gray-900">
+					<div className="w-full mx-0 flex flex-wrap items-baseline justify-between mx-auto_ p-4">
+						<Link to="/" className="flex items-center uppercase">
+							Hospital LOCation
 						</Link>
 
-						<div className="flex items-center md:order-2">
+						<div className="flex justify-between items-baseline md:order-2">
 							{selector?.isConnected && (
 								<button
 									type="button"
@@ -42,9 +34,6 @@ const Header = () => {
 										setisMenuUserOpen(!isMenuUserOpen);
 									}}
 								>
-									<span className="sr-only">
-										Open user menu
-									</span>
 
 									<Avatar
 										status="online"
@@ -56,7 +45,7 @@ const Header = () => {
 
 							{isMenuUserOpen && (
 								<div
-									className={`absolute right-20 top-11 z-50 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 mt-5`}
+									className={`absolute right-10 top-11 z-50 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 mt-5`}
 								>
 									<div className="px-4 py-3 text-center">
 										<span className="block text-sm text-gray-900 dark:text-white">
@@ -73,7 +62,7 @@ const Header = () => {
 									>
 										<li>
 											<Link
-												to={`/user/dashboard/${selector?.uuid}`}
+												to={`/users/dashboard/`}
 												className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
 											>
 												Dashboard
@@ -82,7 +71,7 @@ const Header = () => {
 
 										<li>
 											<Link
-												to={`/user/profil/${selector?.uuid}`}
+												to={`/users/profil/${selector.uuid}`}
 												className="flex items-center py-2 px-1 text-gray-700 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
 											>
 												<span className="flex-1 ml-3 whitespace-nowrap">
@@ -93,10 +82,10 @@ const Header = () => {
 
 										<li>
 											<Link
-												to={`/user/logout/${selector?.uuid}`}
+												to={`/users/logout/${selector.uuid}`}
 												className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
 											>
-												Sign out
+												Déconnexion
 											</Link>
 										</li>
 									</ul>
@@ -136,68 +125,38 @@ const Header = () => {
 							}  w-full md:flex md:w-auto md:order-1`}
 							id="navbar-user"
 						>
-							<ul className="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-								{isUserConnected && (
-									<div className="md:hidden">
-										<li>
-											<Link
-												to={`/user/dashboard/${selector?.uuid}`}
-												className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-											>
-												Médicaments
-											</Link>
-										</li>
-										<li>
-											<Link
-												to={`/user/messages/${selector?.uuid}`}
-												className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-											>
-												Messages
-											</Link>
-										</li>
-										<li>
-											<Link
-												to={`/user/profil/${selector?.uuid}`}
-												className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-											>
-												Profil
-											</Link>
-										</li>
-										<hr />
-									</div>
-								)}
+							<ul className="md:hidden flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
 								<li>
 									<Link
-										to="/"
+										to={`/user/dashboard/${selector?.uuid}`}
 										className="block py-2 pl-3 pr-4 text-[#039875]  rounded md:bg-transparent md:text-[#039875] md:p-0 md:dark:text-blue-500"
 										aria-current="page"
 									>
-										Accueil
+										Page d'accueil
 									</Link>
 								</li>
 								<li>
 									<Link
-										to="/Services"
+										to={`/users/messagerie/${selector.uuid}`}
 										className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-[#039875] md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
 									>
-										Services
-									</Link>
-								</li>
-
-								<li>
-									<Link
-										to="/Contact"
-										className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-[#039875] md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
-									>
-										Contact
+										Messagerie
 									</Link>
 								</li>
 								<li>
 									<Link
-										to="/Apropos"
+										to={`/users/profil/${selector.uuid}`}
 										className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-[#039875] md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
 									>
-										Apropos
+										Profil
+									</Link>
+								</li>
+								<li>
+									<Link
+										to={`/users/logout/${selector.uuid}`}
+										className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-[#039875] md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+									>
+										Déconnexion
 									</Link>
 								</li>
 							</ul>

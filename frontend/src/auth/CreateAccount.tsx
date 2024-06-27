@@ -27,12 +27,6 @@ const CreateAccount = () => {
 				"Adresse e-mail invalide"
 			)
 			.required("Champ requis"),
-		numero: Yup.string()
-			.required("Champ requis")
-			.matches(
-				/^(?:243|250|256|257|255|242|254|244)?(?:80|81|82|83|84|85|89|90|91|92|93|94|95|96|97|98|99)\d{7}$/,
-				"Le téléphone doit commencer par 243 et suivre par 81, 82, 80, 89, 99 ou 97, et contenir en tout 12 chiffres"
-			),
 		password: Yup.string()
 			.required("Le mot de passe est requis")
 			.min(6, "Le mot de passe doit contenir au moins 12 caractères"),
@@ -44,7 +38,6 @@ const CreateAccount = () => {
 	const initialFormData: initialFormDataUser = {
 		pseudo: "",
 		email: "",
-		numero: "",
 		password: "",
 		confirmPassword: "",
 	};
@@ -53,7 +46,7 @@ const CreateAccount = () => {
 	const [isLeading2, setIsLeading2] = useState(false);
 	const navigate = useNavigate();
 
-	const handleSubmit = (values) => {
+	const handleSubmit = (values: unknown) => {
 		setIsLeading2(true);
 		axios
 			.post(`${getMainUrlApi()}auth/register`, values)
@@ -66,8 +59,11 @@ const CreateAccount = () => {
 					axios.defaults.headers.common[
 						"Authorization"
 					] = `Bearer ${token}`;
+					const e = response.data.error
+						? response.data.error.errors.message
+						: response.data.message;
 
-					toast.info(`🫡 ${response.data.message}`, {
+					toast.info(`🫡 ${e}`, {
 						position: "bottom-right",
 						autoClose: 9000,
 						hideProgressBar: false,
@@ -85,7 +81,7 @@ const CreateAccount = () => {
 						const url = `/users/dashboard`;
 						setIsLeading2(false);
 						navigate(url);
-					} else if (userType === "hospital") {
+					} else if (userType === "hopital") {
 						setIsLeading2(false);
 						const url = `/hosptal/dashboard/`;
 						navigate(url);
@@ -153,27 +149,6 @@ const CreateAccount = () => {
 							/>
 							<ErrorMessage
 								name="name"
-								component="div"
-								className="text-red-500"
-							/>
-						</div>
-
-						<div className="md:mb-2">
-							<label
-								className="text-left block text-[#039875] text-sm font-bold mb-2"
-								htmlFor="numero"
-							>
-								Numero de telephone
-							</label>
-							<Field
-								className={`shadow appearance-none border  rounded w-full py-2 px-3 text-gray-600 leading-tight focus:outline-none focus:shadow-outline  focus:ring-1}`}
-								id="numero"
-								type="text"
-								placeholder="243 000 000 000"
-								name="numero"
-							/>
-							<ErrorMessage
-								name="numero"
 								component="div"
 								className="text-red-500"
 							/>
@@ -279,7 +254,7 @@ const CreateAccount = () => {
 								to="/"
 								className="text-[#039875] w-full text-center mt-1 hover:text-[#179275] hover:font-bold"
 							>
-								{`j'ai deja un compte`}
+								{`j'ai déjà un compte`}
 							</Link>
 						</div>
 					</Form>

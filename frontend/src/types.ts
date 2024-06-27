@@ -14,7 +14,7 @@ export interface UserProps {
 export interface initialFormDataUser {
 	pseudo: string;
 	email: string;
-	numero: string;
+	numero?: string;
 	password: string;
 	confirmPassword: string;
 }

@@ -64,7 +64,7 @@ const Login: React.FC = () => {
 					const url = `/users/dashboard`;
 					navigate(url);
 				} else if (userType === "hopital") {
-					const url = `/hosptal/dashboard/`;
+					const url = `/hospital/dashboard/`;
 					navigate(url);
 				} else if (userType === "admin") {
 					const url = `/admin/dashboard/`;

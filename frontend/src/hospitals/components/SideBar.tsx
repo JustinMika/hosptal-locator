@@ -1,3 +1,4 @@
+import { Avatar } from "flowbite-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -12,7 +13,7 @@ const SideBar = () => {
 			<nav className="fixed top-0 right-0 left-0 z-50 w-full bg-slate-100 border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
 				<div className="px-3 py-3 lg:px-5 lg:pl-3">
 					<div className="flex items-center justify-between">
-						<div className="flex items-center justify-start">
+						<div className="flex items-baseline justify-start">
 							<button
 								type="button"
 								className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
@@ -35,9 +36,10 @@ const SideBar = () => {
 									></path>
 								</svg>
 							</button>
+
 							<Link
-								to={`/hosptal/dashboard/`}
-								className="flex md:mr-24"
+								to={`/hospital/dashboard/`}
+								className="flex md:mr-24 ml-4"
 							>
 								<span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white uppercase flex gap-3 justify-center items-baseline hover:text-green-600 duration-100">
 									<svg
@@ -57,17 +59,19 @@ const SideBar = () => {
 							{/* menu profil user */}
 							<div className="flex items-center">
 								<button
+									type="button"
+									className="flex mr-3 text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+									id="user-menu-button"
+									aria-expanded="true"
+									data-dropdown-placement="bottom"
 									onClick={() => {
 										setisMenuUserOpen(!isMenuUserOpen);
 									}}
 								>
-									<img
-										id="avatarButton"
-										data-dropdown-toggle="userDropdown"
-										data-dropdown-placement="bottom-start"
-										className="w-10 h-10 rounded-full cursor-pointer"
-										src="/docs/images/people/profile-picture-5.jpg"
-										alt="User dropdown"
+									<Avatar
+										status="online"
+										rounded
+										className="border border-gray-500 rounded-full"
 									/>
 								</button>
 
@@ -92,7 +96,7 @@ const SideBar = () => {
 									>
 										<li>
 											<Link
-												to={`/hosptal/dashboard/`}
+												to={`/hospital/dashboard/`}
 												className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
 											>
 												Dashboard
@@ -100,7 +104,7 @@ const SideBar = () => {
 										</li>
 										<li>
 											<Link
-												to={`/hosptal/dashboard/profil`}
+												to={`/hospital/dashboard/profil`}
 												className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
 											>
 												Profil
@@ -109,7 +113,7 @@ const SideBar = () => {
 									</ul>
 									<div className="py-1">
 										<Link
-											to={`/hosptal/dashboard/logout`}
+											to={`/hospital/dashboard/logout`}
 											className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
 										>
 											Déconnexion
@@ -126,7 +130,7 @@ const SideBar = () => {
 					<ul className="space-y-2 font-medium">
 						<li>
 							<Link
-								to={`/hosptal/dashboard/`}
+								to={`/hospital/dashboard/`}
 								className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
 							>
 								<svg
@@ -144,7 +148,7 @@ const SideBar = () => {
 						</li>
 						<li>
 							<Link
-								to={`/hosptal/dashboard/alertes-users/`}
+								to={`/hospital/dashboard/alertes-users/`}
 								className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
 							>
 								<svg
@@ -163,7 +167,7 @@ const SideBar = () => {
 						</li>
 						<li>
 							<Link
-								to={`/hosptal/dashboard/messagerie/`}
+								to={`/hospital/dashboard/messagerie/`}
 								className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
 							>
 								<svg
@@ -188,7 +192,7 @@ const SideBar = () => {
 						</li>
 						<li>
 							<Link
-								to={`/hosptal/dashboard/profil/`}
+								to={`/hospital/dashboard/profil/`}
 								className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
 							>
 								<svg
@@ -207,7 +211,7 @@ const SideBar = () => {
 						</li>
 						<li>
 							<Link
-								to={`/hosptal/dashboard/logout`}
+								to={`/hospital/dashboard/logout`}
 								className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
 							>
 								<svg
