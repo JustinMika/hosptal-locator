@@ -10,6 +10,10 @@ const Utilisateur = sequelize.define(
 			primaryKey: true,
 			autoIncrement: true,
 		},
+		pseudo: {
+			type: DataTypes.STRING,
+			allowNull: false,
+		},
 		email: {
 			type: DataTypes.STRING,
 			allowNull: false,
@@ -19,24 +23,27 @@ const Utilisateur = sequelize.define(
 			allowNull: false,
 		},
 		latitude: {
-			type: DataTypes.DECIMAL(10, 8),
+			type: DataTypes.STRING,
 			allowNull: true,
 		},
 		longitude: {
-			type: DataTypes.DECIMAL(11, 8),
+			type: DataTypes.STRING,
 			allowNull: true,
 		},
 		userType: {
 			type: DataTypes.ENUM("user", "admin", "hospital"),
 			allowNull: false,
+			field: "userType",
 		},
 		createdAt: {
 			type: DataTypes.DATE,
 			defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
+			field: "createdAt",
 		},
 		updatedAt: {
 			type: DataTypes.DATE,
 			defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
+			field: "updatedAt",
 		},
 	},
 	{

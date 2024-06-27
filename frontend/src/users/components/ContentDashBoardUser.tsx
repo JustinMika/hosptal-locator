@@ -1,17 +1,18 @@
-import Footer from './Footer'
+import React, { ReactNode } from "react";
 
-// eslint-disable-next-line react/prop-types
-const ContentDashBoardUser = ({ children }) => {
-    return (
-        <>
-            <div className='p-4 sm:ml-64'>
-                <div className='p-4 border- rounded dark:border-gray-700 mt-20'>
-                    {children}
-                </div>
-                <Footer />
-            </div>
-        </>
-    )
+interface ContentProps {
+	children: ReactNode;
 }
+const ContentDashBoardUser: React.FC<ContentProps> = ({ children }) => {
+	return (
+		<>
+			<div className="p-4 sm:ml-64">
+				<div className="p-0 border- rounded dark:border-gray-700 mt-0">
+					{children}
+				</div>
+			</div>
+		</>
+	);
+};
 
-export default ContentDashBoardUser
+export default ContentDashBoardUser;

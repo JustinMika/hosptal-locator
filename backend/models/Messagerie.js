@@ -1,7 +1,7 @@
 // messageries.js
 const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
-const Utilisateur = require("./utilisateurs");
+const sequelize = require("../config/databases");
+const Utilisateur = require("./Utilisateur");
 
 const Messagerie = sequelize.define(
 	"messageries",

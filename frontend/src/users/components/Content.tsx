@@ -1,14 +1,13 @@
-/* eslint-disable react/prop-types */
-import Footer from './Footer'
+import React, { ReactNode } from 'react';
 
-const Content = ({ children }) => {
-    return (
-        <div className='w-full h-fit md:h-[85vh] sm:h-screen xs:h-screen -overflow-y-scroll flex justify-between items-center flex-col'>
-            {/* my-5 w-full h-full */}
-            <div className=''>{children}</div>
-            <Footer />
-        </div>
-    )
-}
+interface ContentProps {
+	children: ReactNode;
+  }
 
-export default Content
+const Content: React.FC<ContentProps> = ({ children }) => (
+  <div className="w-full h-fit md:h-[85vh] sm:h-screen xs:h-screen -overflow-y-scroll flex justify-between items-center flex-col">
+    <div className="">{children}</div>
+  </div>
+);
+
+export default Content;

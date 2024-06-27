@@ -1,106 +1,132 @@
 import axios from "axios";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import ContentAdmin from "./../components/ContentAdmin.tsx";
+import ContentAdmin from "./../components/ContentAdmin";
+import getMainUrlApi from "../../utils/getMainUrlApi";
+import { toast, ToastContainer } from "react-toastify";
 import { useState } from "react";
 
 const ValidationSchema = Yup.object().shape({
-	medicament: Yup.string().required("Le nom du médicament est requis"),
-	montant: Yup.number().required("Le montant est requis"),
-	devise: Yup.string().required("La devise est requise"),
-	telephone: Yup.string().required("Le numéro de téléphone est requis"),
+	pseudo: Yup.string().required("Le nom de l'hopital est requis"),
+	email: Yup.string()
+		.required("L'adresse e-mail est requise")
+		.email()
+		.min(4, "L'e-mail doit avoir min 4 caractères"),
+	latitude: Yup.number()
+		.required("La latitude est requise")
+		.min(5, "min 5 caractères"),
+	longitude: Yup.number()
+		.required("La longitude est requise")
+		.min(5, "min 5 caractères"),
 });
 
-const AddHosptal = () => {
+const AddHospital = () => {
+	localStorage.setItem("page", "Ajout des hopitaux dans la base de données");
 	axios.defaults.withCredentials = true;
-	window.document.title = "Ajout des hopitaux dans la base de donnees";
-	localStorage.setItem("page", "Ajout des hopitaux dans la base de donnees");
-	const [liens, setliens] = useState("");
+	window.document.title = "Ajout des hopitaux dans la base de données";
 
-	const handleSubmit = async (values, { resetForm }) => {
+	const [loading, setLoading] = useState<boolean>(false);
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const handleSubmit = async (
+		values: unknown,
+		{ resetForm }: { resetForm: () => void }
+	) => {
 		console.log(values);
-		await axios
-			.post(`generate-transaction/`, values)
-			.then((response) => {
-				setliens(response.data.data);
-				resetForm();
-			})
-			.catch((err) => {
-				console.log(err);
+		setLoading(true);
+		try {
+			const response = await axios.post(
+				`${getMainUrlApi()}hospitals/add-hopital/`,
+				values
+			);
+			toast.info(
+				response?.data?.message?.name ??
+					"Duplication du champ email et/ou nom de l'hopital",
+				{
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: true,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: 1,
+					theme: "light",
+				}
+			);
+			resetForm(); // Réinitialise le formulaire après une soumission réussie
+		} catch (error) {
+			console.error("Error during submission:", error);
+			toast.error(`${error ?? "Erreur"}🫡`, {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: true,
+				closeOnClick: false,
+				pauseOnHover: true,
+				draggable: true,
+				progress: 1,
+				theme: "light",
 			});
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	return (
 		<ContentAdmin>
+			<ToastContainer />
 			<div className="w-1/2 mx-auto p-4">
-				{liens && (
-					<div
-						className="p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400 whitespace-pre-line flex items-start justify-center"
-						role="alert"
-					>
-						<p className="font-medium flex-wrap whitespace-pre-line flex-1 mr-1">
-							<textarea
-								disabled={true}
-								className="w-full rounded-md shadow-sm"
-								value={`/`}
-							>
-								{`/`}
-							</textarea>
-						</p>
-					</div>
-				)}
-
-				<div className="w-full p-6  rounded-md shadow-md bg-white">
-					<h2 className="text-2xl  my-4 font-semibold mb-4 text-gray-600">
+				<div className="w-full p-6 rounded-md shadow-md bg-white">
+					<h2 className="text-2xl my-4 font-semibold mb-4 text-gray-600">
 						Ajout des hopitaux
 					</h2>
 					<Formik
 						initialValues={{
-							medicament: "",
-							montant: "",
-							devise: "",
-							telephone: "",
+							pseudo: "",
+							email: "",
+							latitude: "",
+							longitude: "",
 						}}
 						validationSchema={ValidationSchema}
 						onSubmit={handleSubmit}
 					>
-						{/* {({ isSubmitting }) => ( */}
 						<Form>
 							<div className="flex justify-between">
 								<div className="mb-4 mr-2 w-full">
 									<label
-										htmlFor="medicament"
+										htmlFor="pseudo"
 										className="block w-full text-sm font-medium text-gray-700"
 									>
-										Nom du médicament
+										Nom de l'hopital
 									</label>
 									<Field
 										type="text"
-										id="medicament"
-										name="medicament"
+										id="pseudo"
+										name="pseudo"
+										placeholder="Nom de l'hopital"
 										className="mt-1 p-2 w-full border rounded-md"
 									/>
 									<ErrorMessage
-										name="medicament"
+										name="pseudo"
 										component="div"
 										className="text-red-500 text-sm"
 									/>
 								</div>
 								<div className="mb-4 w-full">
 									<label
-										htmlFor="montant"
+										htmlFor="email"
 										className="block text-sm font-medium text-gray-700"
 									>
-										Montant avec livraison
+										Email
 									</label>
 									<Field
-										type="number"
-										id="montant"
-										name="montant"
-										className="mt-1 p-2 w-full border rounded-md"
+										type="email"
+										id="email"
+										name="email"
+										placeholder="E-mail"
+										className="mt-1 p-2 w-full border border-gray-500 rounded-md"
 									/>
 									<ErrorMessage
-										name="montant"
+										name="email"
 										component="div"
 										className="text-red-500 text-sm"
 									/>
@@ -110,37 +136,38 @@ const AddHosptal = () => {
 							<div className="flex justify-between mt-4">
 								<div className="mb-4 mr-2 w-full">
 									<label
-										htmlFor="devise"
+										htmlFor="latitude"
 										className="block text-sm font-medium text-gray-700"
 									>
-										Devise
+										Latitude
 									</label>
 									<Field
-										id="devise"
-										name="devise"
+										id="latitude"
+										name="latitude"
+										placeholder="Latitude"
 										className="mt-1 p-2 w-full border rounded-md border-gray-600"
 									/>
 									<ErrorMessage
-										name="devise"
+										name="latitude"
 										component="div"
 										className="text-red-500 text-sm"
 									/>
 								</div>
-								<div className="mb-4 w-full">
+								<div className="mb-4 mr-2 w-full">
 									<label
-										htmlFor="telephone"
+										htmlFor="longitude"
 										className="block text-sm font-medium text-gray-700"
 									>
-										Numéro de téléphone
+										Longitude
 									</label>
 									<Field
-										type="text"
-										id="telephone"
-										name="telephone"
-										className="mt-1 p-2 w-full border rounded-md"
+										id="longitude"
+										name="longitude"
+										placeholder="Longitude"
+										className="mt-1 p-2 w-full border rounded-md border-gray-600"
 									/>
 									<ErrorMessage
-										name="telephone"
+										name="longitude"
 										component="div"
 										className="text-red-500 text-sm"
 									/>
@@ -149,11 +176,13 @@ const AddHosptal = () => {
 							<button
 								type="submit"
 								className="px-4 py-2.5 bg-blue-400 text-white rounded-md hover:bg-blue-600 transition-all duration-200 w-full"
+								disabled={loading}
 							>
-								Ajouter
+								{!loading
+									? "Ajouter"
+									: "Enregistrement en cours ..."}
 							</button>
 						</Form>
-						{/* )} */}
 					</Formik>
 				</div>
 			</div>
@@ -161,4 +190,4 @@ const AddHosptal = () => {
 	);
 };
 
-export default AddHosptal;
+export default AddHospital;
