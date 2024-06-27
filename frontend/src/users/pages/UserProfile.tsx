@@ -5,15 +5,19 @@ import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import getMainUrlApi from "../../utils/getMainUrlApi";
 import Header from "../components/Header";
+import { RootState } from "../../store/store";
+import { useSelector } from "react-redux";
 
 const UserProfile: React.FC = () => {
 	axios.defaults.withCredentials = true;
 	localStorage.setItem("page", "profil utilisateur");
 
+	const user = useSelector((state: RootState) => state.user);
+
 	window.document.title = "Profil utilisateur";
-	const [Email, setEmail] = useState<string>("");
-	const [Name, setName] = useState<string>("");
-	const [Phone, setPhone] = useState<string>("");
+	const [Email, setEmail] = useState<string | undefined>(user?.email);
+	const [Name, setName] = useState<string | undefined>(user?.pseudo);
+	const [Phone, setPhone] = useState<string>("+243 000 000 000");
 	axios.defaults.withCredentials = true;
 
 	const [pwd, setPwd] = useState<string>("");

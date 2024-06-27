@@ -56,7 +56,7 @@ const Users: React.FC = () => {
 				console.log(err);
 			});
 	};
-	
+
 	const [Pseudo, setPseudo] = useState<string>("");
 	const [Email, setEmail] = useState<string>("");
 

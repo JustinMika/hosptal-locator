@@ -1,8 +1,11 @@
 import { Avatar } from "flowbite-react";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { RootState } from "../../store/store";
 
 const SideBar = () => {
+	const user = useSelector((state: RootState) => state.user);
 	const [isMenuUserOpen, setisMenuUserOpen] = useState(false);
 	const [isMenu, setisMenu] = useState(false);
 
@@ -85,9 +88,9 @@ const SideBar = () => {
 									}
 								>
 									<div className="px-4 py-3 text-sm text-gray-900 dark:text-white text-center">
-										<div>Justin Micah</div>
+										<div>{user?.pseudo}</div>
 										<div className="font-medium truncate">
-											justinmika@flowbite.com
+											{user?.email}
 										</div>
 									</div>
 									<ul

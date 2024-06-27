@@ -108,7 +108,7 @@ const App = () => {
 					errorElement={<PageNotFound />}
 				/>
 
-				{/* logput routes */}
+				{/* logout routes */}
 				<Route
 					path="/admin/dashboard/logout"
 					element={<Logout />}
@@ -124,7 +124,7 @@ const App = () => {
 					element={<Logout />}
 					errorElement={<PageNotFound />}
 				/>
-				{/* End users routes */}
+				{/* End logout routes */}
 
 				{/* Not found route */}
 				<Route

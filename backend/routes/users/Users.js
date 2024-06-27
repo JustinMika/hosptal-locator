@@ -24,6 +24,20 @@ router.get("/", async (req, res) => {
 	}
 });
 
+router.get("/:type", async (req, res) => {
+	try {
+		const { type } = req.params;
+		const user = await User.findAll({
+			where: {
+				UserType: type,
+			},
+		});
+		res.json(user);
+	} catch (error) {
+		res.status(500).json({ message: "Error fetching alerts", error });
+	}
+});
+
 // create-account-admin-users
 router.post("/create-admin-users/", async (req, res) => {
 	const { name, email } = req.body;

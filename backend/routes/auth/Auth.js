@@ -45,13 +45,16 @@ router.post("/register", async (req, res) => {
 			{
 				userId: user.id,
 				userType: user.userType,
+				userInfo: user,
+				user: user,
 			},
 			process.env.JWT_TOKEN
 		);
 		res.json({
-			message: "Registration successful",
 			token,
 			userType: user.userType,
+			user: user,
+			message: "Registration successful",
 		});
 	} catch (error) {
 		res.status(500).json({ message: "Error registering user", error });
@@ -77,12 +80,14 @@ router.post("/login", async (req, res) => {
 				userId: user.id,
 				userType: user.userType,
 				userInfo: user,
+				user: user,
 			},
 			process.env.JWT_TOKEN
 		);
 		res.json({
 			token,
 			userType: user.userType,
+			user: user,
 			message: "Authentification reussi avec succès.",
 		});
 	} catch (error) {

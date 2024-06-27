@@ -5,15 +5,20 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ContentAdmin from "../components/ContentAdmin.tsx";
 import getMainUrlApi from "../../utils/getMainUrlApi.ts";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store.ts";
 
 const Profil = () => {
 	axios.defaults.withCredentials = true;
 	localStorage.setItem("page", "profil");
 
 	window.document.title = "Profil";
-	const [Email, setEmail] = useState("");
-	const [Name, setName] = useState("");
-	const [Phone, setPhone] = useState("");
+	const user = useSelector((state: RootState) => state.user);
+
+	window.document.title = "Profil utilisateur";
+	const [Email, setEmail] = useState<string | undefined>(user?.email);
+	const [Name, setName] = useState<string | undefined>(user?.pseudo);
+	const [Phone, setPhone] = useState<string>("+243 000 000 000");
 	axios.defaults.withCredentials = true;
 
 	const [pwd, setPwd] = useState("");

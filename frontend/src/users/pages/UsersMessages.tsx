@@ -1,18 +1,93 @@
+import { ToastContainer } from "react-toastify";
 import AsideDashboard from "../components/AsideDashboard.tsx";
 import ContentDashBoardUser from "../components/ContentDashBoardUser.tsx";
+import Header from "../components/Header.tsx";
+import getMainUrlApi from "../../utils/getMainUrlApi.ts";
+import { FormEvent, useEffect, useState } from "react";
+import axios from "axios";
+import { RootState } from "../../store/store.ts";
+import { Messages, UserProps } from "../../types.ts";
+import { useSelector } from "react-redux";
+import { Avatar } from "flowbite-react";
 
 const UsersMessages = () => {
 	window.document.title = "Message";
+	// user list
+	const [users, setUsers] = useState<Array<UserProps>>([]);
+	axios.defaults.withCredentials = true;
+	localStorage.setItem("page", "Messagerie");
+	const user = useSelector((state: RootState) => state.user);
+
+	const [messages, setMessages] = useState<Array<Messages>>([]);
+	const [selectUser, setselectUser] = useState<number | null | undefined>(
+		null
+	);
+	const [msg, setMsg] = useState<string | null>(null);
+
+	// recuperationdes utilisateurs clients
+	useEffect(() => {
+		axios
+			.get(`${getMainUrlApi()}users/hopital`)
+			.then((data) => {
+				setUsers(data.data);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}, []);
+
+	// recuperation des messages selon l'utiloisateuir connecte et l'utiisateur selectionner
+	const getMessageUserConnectedUserSend = async (
+		me: number | null | undefined,
+		userSend: number | null | undefined
+	) => {
+		await axios
+			.get(`${getMainUrlApi()}messages/${me}/${userSend}`)
+			.then((data) => {
+				setMessages(data.data);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
+	const sendMessageChat = async (e: FormEvent) => {
+		e.preventDefault();
+		const data = {
+			fromUserId: user?.id,
+			toUserId: selectUser,
+			message: msg,
+		};
+
+		await axios
+			.post(`${getMainUrlApi()}messages`, data)
+			.then((res) => {
+				console.log(res);
+				setMsg("");
+				getMessageUserConnectedUserSend(user?.id, selectUser);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
 	return (
 		<>
 			<AsideDashboard />
 			<ContentDashBoardUser>
-				<div className="p-0 sm:ml-64_ m-0 w-full h-[90vh] min-h-[90vh]">
+				<Header />
+				<ToastContainer />
+				<div className="p-0 sm:ml-64_ m-0 w-full">
 					<div className="p-4 border- h-[90vh] min-h-[90vh] rounded dark:border-gray-700 m-0 mt-2">
 						<div className="w-full mx-auto m-0 h-[90vh] min-h-[90vh] p-0">
-							<div className="min-w-full border rounded lg:grid lg:grid-cols-3">
+							<div className="min-w-full w-full max-w-full border rounded lg:grid lg:grid-cols-3">
 								{/* contact */}
-								<div className="border-r border-gray-300 lg:col-span-1">
+								<div
+									className={`border-r border-gray-300 lg:col-span-1 ${
+										selectUser
+											? "hidden lg:block"
+											: "w-full"
+									}`}
+								>
 									<div className="mx-3 my-3">
 										{/* search form contact */}
 										<div className="relative text-gray-600">
@@ -43,368 +118,132 @@ const UsersMessages = () => {
 										<h2 className="my-2 mb-2 ml-2 text-lg text-gray-600">
 											Chats
 										</h2>
-										<li>
-											<a className="flex items-center px-2 py-1 text-sm transition duration-150 ease-in-out border-b border-gray-300 cursor-pointer hover:bg-gray-100 focus:outline-none">
-												<img
-													className="object-cover w-10 h-10 rounded-full"
-													src="https://cdn.pixabay.com/photo/2018/09/12/12/14/man-3672010__340.jpg"
-													alt="username"
-												/>
-												<div className="w-full pb-2">
-													<div className="flex justify-between">
-														<span className="block ml-2 font-semibold text-gray-600">
-															Jhon Don
-														</span>
+										{users.map((users) => (
+											<li key={users.id}>
+												<a
+													href="#"
+													className={`flex items-center px-2 py-1 text-sm transition duration-150 ease-in-out border-b border-gray-300 cursor-pointer ${
+														selectUser === users.id
+															? "bg-slate-200"
+															: "hover:bg-gray-100 focus:outline-none"
+													} `}
+													onClick={() => {
+														setselectUser(users.id);
+														getMessageUserConnectedUserSend(
+															user?.id,
+															users.id
+														);
+													}}
+												>
+													<Avatar
+														className="border-gray-100"
+														rounded
+														status="online"
+													/>
+													<div className="w-full pb-2">
+														<div className="flex justify-between">
+															<span className="block ml-2 font-semibold text-gray-600">
+																{users.pseudo}
+															</span>
+															<span className="block ml-2 text-sm text-gray-600">
+																{
+																	users.created_at
+																}
+															</span>
+														</div>
 														<span className="block ml-2 text-sm text-gray-600">
-															25 minutes
+															{users?.email}
 														</span>
 													</div>
-													<span className="block ml-2 text-sm text-gray-600">
-														bye
-													</span>
-												</div>
-											</a>
-											<a className="flex items-center px-3 py-2 text-sm transition duration-150 ease-in-out bg-gray-100 border-b border-gray-300 cursor-pointer focus:outline-none">
-												<img
-													className="object-cover w-10 h-10 rounded-full"
-													src="https://cdn.pixabay.com/photo/2016/06/15/15/25/loudspeaker-1459128__340.png"
-													alt="username"
-												/>
-												<div className="w-full pb-2">
-													<div className="flex justify-between">
-														<span className="block ml-2 font-semibold text-gray-600">
-															Same
-														</span>
-														<span className="block ml-2 text-sm text-gray-600">
-															50 minutes
-														</span>
-													</div>
-													<span className="block ml-2 text-sm text-gray-600">
-														Good night
-													</span>
-												</div>
-											</a>
-											<a className="flex items-center px-3 py-2 text-sm transition duration-150 ease-in-out border-b border-gray-300 cursor-pointer hover:bg-gray-100 focus:outline-none">
-												<img
-													className="object-cover w-10 h-10 rounded-full"
-													src="https://cdn.pixabay.com/photo/2018/01/15/07/51/woman-3083383__340.jpg"
-													alt="username"
-												/>
-												<div className="w-full pb-2">
-													<div className="flex justify-between">
-														<span className="block ml-2 font-semibold text-gray-600">
-															Emma
-														</span>
-														<span className="block ml-2 text-sm text-gray-600">
-															6 hour
-														</span>
-													</div>
-													<span className="block ml-2 text-sm text-gray-600">
-														Good Morning
-													</span>
-												</div>
-											</a>
-											<a className="flex items-center px-3 py-2 text-sm transition duration-150 ease-in-out border-b border-gray-300 cursor-pointer hover:bg-gray-100 focus:outline-none">
-												<img
-													className="object-cover w-10 h-10 rounded-full"
-													src="https://cdn.pixabay.com/photo/2018/09/12/12/14/man-3672010__340.jpg"
-													alt="username"
-												/>
-												<div className="w-full pb-2">
-													<div className="flex justify-between">
-														<span className="block ml-2 font-semibold text-gray-600">
-															Jhon Don
-														</span>
-														<span className="block ml-2 text-sm text-gray-600">
-															25 minutes
-														</span>
-													</div>
-													<span className="block ml-2 text-sm text-gray-600">
-														bye
-													</span>
-												</div>
-											</a>
-											<a className="flex items-center px-3 py-2 text-sm transition duration-150 ease-in-out bg-gray-100 border-b border-gray-300 cursor-pointer focus:outline-none">
-												<img
-													className="object-cover w-10 h-10 rounded-full"
-													src="https://cdn.pixabay.com/photo/2016/06/15/15/25/loudspeaker-1459128__340.png"
-													alt="username"
-												/>
-												<div className="w-full pb-2">
-													<div className="flex justify-between">
-														<span className="block ml-2 font-semibold text-gray-600">
-															Same
-														</span>
-														<span className="block ml-2 text-sm text-gray-600">
-															50 minutes
-														</span>
-													</div>
-													<span className="block ml-2 text-sm text-gray-600">
-														Good night
-													</span>
-												</div>
-											</a>
-											<a className="flex items-center px-3 py-2 text-sm transition duration-150 ease-in-out border-b border-gray-300 cursor-pointer hover:bg-gray-100 focus:outline-none">
-												<img
-													className="object-cover w-10 h-10 rounded-full"
-													src="https://cdn.pixabay.com/photo/2018/01/15/07/51/woman-3083383__340.jpg"
-													alt="username"
-												/>
-												<div className="w-full pb-2">
-													<div className="flex justify-between">
-														<span className="block ml-2 font-semibold text-gray-600">
-															Emma
-														</span>
-														<span className="block ml-2 text-sm text-gray-600">
-															6 hour
-														</span>
-													</div>
-													<span className="block ml-2 text-sm text-gray-600">
-														Good Morning
-													</span>
-												</div>
-											</a>
-											<a className="flex items-center px-3 py-2 text-sm transition duration-150 ease-in-out border-b border-gray-300 cursor-pointer hover:bg-gray-100 focus:outline-none">
-												<img
-													className="object-cover w-10 h-10 rounded-full"
-													src="https://cdn.pixabay.com/photo/2018/09/12/12/14/man-3672010__340.jpg"
-													alt="username"
-												/>
-												<div className="w-full pb-2">
-													<div className="flex justify-between">
-														<span className="block ml-2 font-semibold text-gray-600">
-															Jhon Don
-														</span>
-														<span className="block ml-2 text-sm text-gray-600">
-															25 minutes
-														</span>
-													</div>
-													<span className="block ml-2 text-sm text-gray-600">
-														bye
-													</span>
-												</div>
-											</a>
-											<a className="flex items-center px-3 py-2 text-sm transition duration-150 ease-in-out bg-gray-100 border-b border-gray-300 cursor-pointer focus:outline-none">
-												<img
-													className="object-cover w-10 h-10 rounded-full"
-													src="https://cdn.pixabay.com/photo/2016/06/15/15/25/loudspeaker-1459128__340.png"
-													alt="username"
-												/>
-												<div className="w-full pb-2">
-													<div className="flex justify-between">
-														<span className="block ml-2 font-semibold text-gray-600">
-															Same
-														</span>
-														<span className="block ml-2 text-sm text-gray-600">
-															50 minutes
-														</span>
-													</div>
-													<span className="block ml-2 text-sm text-gray-600">
-														Good night
-													</span>
-												</div>
-											</a>
-											<a className="flex items-center px-3 py-2 text-sm transition duration-150 ease-in-out border-b border-gray-300 cursor-pointer hover:bg-gray-100 focus:outline-none">
-												<img
-													className="object-cover w-10 h-10 rounded-full"
-													src="https://cdn.pixabay.com/photo/2018/01/15/07/51/woman-3083383__340.jpg"
-													alt="username"
-												/>
-												<div className="w-full pb-2">
-													<div className="flex justify-between">
-														<span className="block ml-2 font-semibold text-gray-600">
-															Emma
-														</span>
-														<span className="block ml-2 text-sm text-gray-600">
-															6 hour
-														</span>
-													</div>
-													<span className="block ml-2 text-sm text-gray-600">
-														Good Morning
-													</span>
-												</div>
-											</a>
-										</li>
+												</a>
+											</li>
+										))}
 									</ul>
 								</div>
 
 								{/* Messages */}
-								<div className="hidden lg:col-span-2 lg:block">
-									<div className="w-full">
-										<div className="relative flex items-center p-3 border-b border-gray-300">
-											<img
-												className="object-cover w-10 h-10 rounded-full"
-												src="https://cdn.pixabay.com/photo/2018/01/15/07/51/woman-3083383__340.jpg"
-												alt="username"
-											/>
-											<span className="block ml-2 font-bold text-gray-600">
-												Emma
-											</span>
-											<span className="absolute w-3 h-3 bg-green-600 rounded-full left-10 top-3"></span>
+								<div
+									className={`${
+										!selectUser
+											? "w-full col-span-12 sm:hidden lg:block md:block"
+											: "w-full col-span-12"
+									} lg:col-span-2 lg:block`}
+								>
+									<div className="w-ful">
+										<div className="flex flex-row-reverse justify-between items-center p-3 border-b border-gray-300">
+											<div className="relative flex items-center justify-start">
+												<Avatar rounded />
+												<span className="block ml-2 font-bold text-gray-600">
+													{`${user?.pseudo} <${user?.email}>`}
+												</span>
+												<span className="absolute w-3 h-3 bg-green-600 rounded-full left-10 -top-1"></span>
+											</div>
+											<button
+												className="bg-blue-500 hover:bg-blue-700 px-4 py-2 rounded-md lg:hidden md:hidden"
+												onClick={() => {
+													setselectUser(null);
+												}}
+											>
+												Retour
+											</button>
 										</div>
 										{/* messages */}
 										<div className="relative w-full p-6 overflow-y-auto h-[60vh]">
 											<ul className="space-y-2">
-												<li className="flex justify-start">
-													<div className="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-														<span className="block">
-															Hi
-														</span>
-													</div>
-												</li>
-												<li className="flex justify-end">
-													<div className="relative max-w-xl px-4 py-2 text-gray-700 bg-gray-100 rounded shadow">
-														<span className="block">
-															Hiiii
-														</span>
-													</div>
-												</li>
-												<li className="flex justify-end">
-													<div className="relative max-w-xl px-4 py-2 text-gray-700 bg-gray-100 rounded shadow">
-														<span className="block">
-															how are you?
-														</span>
-													</div>
-												</li>
-												<li className="flex justify-start">
-													<div className="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-														<span className="block">
-															Lorem ipsum dolor
-															sit, amet
-															consectetur
-															adipisicing elit.
-														</span>
-													</div>
-												</li>
-												<li className="flex justify-start">
-													<div className="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-														<span className="block">
-															Hi
-														</span>
-													</div>
-												</li>
-												<li className="flex justify-end">
-													<div className="relative max-w-xl px-4 py-2 text-gray-700 bg-gray-100 rounded shadow">
-														<span className="block">
-															Hiiii
-														</span>
-													</div>
-												</li>
-												<li className="flex justify-end">
-													<div className="relative max-w-xl px-4 py-2 text-gray-700 bg-gray-100 rounded shadow">
-														<span className="block">
-															<img src="https://cdn.pixabay.com/photo/2018/01/15/07/51/woman-3083383__340.jpg" />
-														</span>
-													</div>
-												</li>
-												<li className="flex justify-start">
-													<div className="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-														<span className="block">
-															Lorem ipsum dolor
-															sit, amet
-															consectetur
-															adipisicing elit.
-														</span>
-													</div>
-												</li>
-												<li className="flex justify-start">
-													<div className="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-														<span className="block">
-															Hi
-														</span>
-													</div>
-												</li>
-												<li className="flex justify-end">
-													<div className="relative max-w-xl px-4 py-2 text-gray-700 bg-gray-100 rounded shadow">
-														<span className="block">
-															Hiiii
-														</span>
-													</div>
-												</li>
-												<li className="flex justify-end">
-													<div className="relative max-w-xl px-4 py-2 text-gray-700 bg-gray-100 rounded shadow">
-														<span className="block">
-															how are you?
-														</span>
-													</div>
-												</li>
-												<li className="flex justify-start">
-													<div className="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
-														<span className="block">
-															Lorem ipsum dolor
-															sit, amet
-															consectetur
-															adipisicing elit.
-														</span>
-													</div>
-												</li>
+												{selectUser &&
+													messages.map((messages) => (
+														<li
+															key={messages.id}
+															className={`${
+																messages.toUserId ===
+																user?.id
+																	? "flex justify-end"
+																	: "flex justify-start"
+															}`}
+														>
+															<div className="relative max-w-xl px-4 py-2 text-gray-700 rounded shadow">
+																<span className="block">
+																	{
+																		messages.message
+																	}
+																</span>
+															</div>
+															{/* <span className="italic">
+															{new Date(messages.sentAt).toLocaleString()}
+														</span> */}
+														</li>
+													))}
 											</ul>
 										</div>
 										{/* formulaire d'envoi */}
-										<div className="flex items-center justify-between w-full p-3 border-t border-gray-300">
-											<button>
-												<svg
-													xmlns="http://www.w3.org/2000/svg"
-													className="w-6 h-6 text-gray-500"
-													fill="none"
-													viewBox="0 0 24 24"
-													stroke="currentColor"
-												>
-													<path
-														strokeLinejoin="round"
-														strokeWidth="2"
-														d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-													/>
-												</svg>
-											</button>
-											<button>
-												<svg
-													xmlns="http://www.w3.org/2000/svg"
-													className="w-5 h-5 text-gray-500"
-													fill="none"
-													viewBox="0 0 24 24"
-													stroke="currentColor"
-												>
-													<path
-														strokeLinejoin="round"
-														strokeWidth="2"
-														d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
-													/>
-												</svg>
-											</button>
-
-											<input
-												type="text"
-												placeholder="Message"
-												className="block w-full py-2 pl-4 mx-3 bg-gray-100 rounded-full outline-none focus:text-gray-700"
-												name="message"
-												required
-											/>
-											<button>
-												<svg
-													xmlns="http://www.w3.org/2000/svg"
-													className="w-5 h-5 text-gray-500"
-													fill="none"
-													viewBox="0 0 24 24"
-													stroke="currentColor"
-												>
-													<path
-														strokeLinejoin="round"
-														strokeWidth="2"
-														d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
-													/>
-												</svg>
-											</button>
-											<button type="submit">
-												<svg
-													className="w-5 h-5 text-gray-500 origin-center transform rotate-90"
-													xmlns="http://www.w3.org/2000/svg"
-													viewBox="0 0 20 20"
-													fill="currentColor"
-												>
-													<path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
-												</svg>
-											</button>
+										<div className="p-0 m-0">
+											<form
+												action="#"
+												onSubmit={sendMessageChat}
+												className="flex items-center justify-between w-full py-2 pr-2 border-t border-gray-300"
+											>
+												<input
+													type="text"
+													placeholder="Message"
+													className="block w-full py-2 pl-4 mx-3 bg-gray-100 rounded-full outline-none focus:text-gray-700"
+													name="message"
+													required
+													value={msg ?? ""}
+													onChange={(e) => {
+														setMsg(e.target.value);
+													}}
+												/>
+												<button type="submit">
+													<svg
+														className="w-6 h-6 text-gray-500 hover:bg-slate-50 origin-center transform rotate-90"
+														xmlns="http://www.w3.org/2000/svg"
+														viewBox="0 0 20 20"
+														fill="currentColor"
+													>
+														<path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+													</svg>
+												</button>
+											</form>
 										</div>
 									</div>
 								</div>

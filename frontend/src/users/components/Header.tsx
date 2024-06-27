@@ -1,12 +1,16 @@
 import { Avatar } from "flowbite-react";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { RootState } from "../../store/store";
 const Header = () => {
+	const user = useSelector((state: RootState) => state.user);
+	// console.log("user slice : " + user?.id);
 	const selector = {
 		isConnected: true,
-		uuid: "uuid",
-		name: "Justin Micah",
-		email: "username@yourdomaine.com",
+		uuid: user?.id,
+		name: user?.pseudo,
+		email: user?.email,
 	};
 
 	const [isMenuOpen, setIsMenuOpen] = useState<boolean>(true);
@@ -34,7 +38,6 @@ const Header = () => {
 										setisMenuUserOpen(!isMenuUserOpen);
 									}}
 								>
-
 									<Avatar
 										status="online"
 										rounded

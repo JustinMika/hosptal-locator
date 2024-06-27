@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 const BreadCrumb: React.FC = () => {
 	window.document.title = "Page d'accueil";
 	return (
-		<div className="sm:flex sm:justify-between sm:items-center mb-8 border-1 border-b pb-1 shadow-transparent">
+		<div className="sm:flex sm:justify-between sm:items-center mb-8 border-1 border-b pb-1 p-3 shadow-transparent">
 			<nav className="flex" aria-label="Breadcrumb">
 				<ol className="inline-flex items-center space-x-1 md:space-x-3">
 					<li className="inline-flex items-center">

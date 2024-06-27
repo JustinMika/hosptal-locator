@@ -1,5 +1,5 @@
 export interface UserProps {
-	id?: number | null | undefined;
+	id?: number | null;
 	pseudo: string;
 	email: string;
 	password: string;
@@ -44,4 +44,26 @@ export interface Alerte {
 	createdAt: Date;
 	updatedAt: Date;
 	pseudo?: string;
+}
+
+export interface User {
+	id?: number | null | undefined;
+	pseudo?: string;
+	email?: string;
+	PASSWORD?: string;
+	latitude?: string;
+	longitude?: string;
+	userType?: string;
+	createdAt?: Date | string;
+	updatedAt?: Date;
+}
+
+export interface Messages {
+	id?: number;
+	fromUserId: number;
+	toUserId: number;
+	message: string;
+	sentAt?: number | Date | string;
+	createdAt?: number | Date | string;
+	updatedAt?: number | Date | string;
 }

@@ -8,12 +8,17 @@ import "react-toastify/dist/ReactToastify.css";
 import { useState } from "react";
 import getMainUrlApi from "../utils/getMainUrlApi.ts";
 
+import { login } from "../store/slice/authSlice.ts";
+import { useDispatch } from "react-redux";
+
 interface Info {
 	email: string;
 	password: string;
 }
 
 const Login: React.FC = () => {
+	const dispatch = useDispatch();
+
 	const navigate = useNavigate();
 	window.document.title = "Login";
 	axios.defaults.withCredentials = true;
@@ -38,13 +43,14 @@ const Login: React.FC = () => {
 				`${getMainUrlApi()}auth/login`,
 				values
 			);
-			// console.log(response?.data?.userType);
-			const { token, userType } = response.data;
+			const { user, token, userType } = response.data;
 
-			if (token && userType) {
+			if (user && token && userType) {
 				axios.defaults.headers.common[
 					"Authorization"
 				] = `Bearer ${token}`;
+
+				dispatch(login({ user, token }));
 
 				toast.info(`🫡 ${response.data.message}`, {
 					position: "bottom-right",
@@ -81,6 +87,18 @@ const Login: React.FC = () => {
 						theme: "light",
 					});
 				}
+			} else {
+				toast.error(`Une erreur est survenue,...`, {
+					position: "top-right",
+					autoClose: 3000,
+					hideProgressBar: false,
+					closeOnClick: false,
+					pauseOnHover: true,
+					draggable: true,
+					progress: 1,
+					theme: "light",
+				});
+				setIsLeading2(false);
 			}
 		} catch (error) {
 			toast.error(`Erreur: Email et/ou mot de passe invalide.`, {

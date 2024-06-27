@@ -5,15 +5,20 @@ import "react-toastify/dist/ReactToastify.css";
 import ContentAdmin from "../components/ContentAdmin";
 import { FormEvent, useState } from "react";
 import getMainUrlApi from "../../utils/getMainUrlApi";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
 
 const HospitalProfil = () => {
 	axios.defaults.withCredentials = true;
 	localStorage.setItem("page", "profil");
 
 	window.document.title = "Profil";
-	const [Email, setEmail] = useState<string>("");
-	const [Name, setName] = useState<string>("");
-	const [Phone, setPhone] = useState<string>("");
+	const user = useSelector((state: RootState) => state.user);
+
+	window.document.title = "Profil utilisateur";
+	const [Email, setEmail] = useState<string | undefined>(user?.email);
+	const [Name, setName] = useState<string | undefined>(user?.pseudo);
+	const [Phone, setPhone] = useState<string>("+243 000 000 000");
 	axios.defaults.withCredentials = true;
 
 	const [pwd, setPwd] = useState("");
@@ -109,8 +114,8 @@ const HospitalProfil = () => {
 			<ToastContainer />
 			<div className="grid md:grid-cols-2 sm:grid-cols-1 gap-8">
 				{/* informations */}
-				<div className="p-3 shadow-md">
-					<div className="rounded-sm border border-stroke bg-white shadow-default shadow-md">
+				<div className="p-3">
+					<div className="rounded-sm border border-stroke bg-white shadow-default">
 						<div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
 							<h3 className="font-medium text-black dark:text-white">
 								Informations Personelles
@@ -253,8 +258,8 @@ const HospitalProfil = () => {
 				</div>
 
 				{/* mot de passe */}
-				<div className="p-3 shadow-md">
-					<div className="rounded-sm border border-stroke bg-white shadow-default shadow-md">
+				<div className="p-3">
+					<div className="rounded-sm border border-stroke bg-white shadow-default">
 						<div className="border-b border-stroke px-2 py-2 dark:border-strokedark">
 							<h3 className="font-medium text-black dark:text-white">
 								Gestion de mot de passe

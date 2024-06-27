@@ -1,11 +1,15 @@
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { RootState } from "../../store/store";
 
 const AsideDashboard = () => {
+	const user = useSelector((state: RootState) => state.user);
+	// console.log("user slice : " + user?.id);
 	const selector = {
 		isConnected: true,
-		uuid: `uukjd-f7854g-y589df74-y895id`,
-		name: `header`,
-		email: "email",
+		uuid: user?.id,
+		name: user?.pseudo,
+		email: user?.email,
 	};
 	return (
 		<aside
@@ -29,9 +33,9 @@ const AsideDashboard = () => {
 						strokeLinejoin="round"
 					/>
 				</svg>
-				<span>Justin Micah</span>
+				<span>{selector.name}</span>
 				<span>
-					<a href="mailto:jmika734@gmail.com">jmika734@gmail.com</a>
+					<a href="mailto:jmika734@gmail.com">{selector.email}</a>
 				</span>
 			</p>
 			<div className="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800 flex flex-col justify-between mt-5">

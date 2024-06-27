@@ -18,6 +18,7 @@ const Messagerie = sequelize.define(
 				model: Utilisateur,
 				key: "id",
 			},
+			field: "fromUserId",
 		},
 		toUserId: {
 			type: DataTypes.INTEGER,
@@ -26,6 +27,7 @@ const Messagerie = sequelize.define(
 				model: Utilisateur,
 				key: "id",
 			},
+			field: "toUserId",
 		},
 		message: {
 			type: DataTypes.TEXT,
@@ -33,15 +35,19 @@ const Messagerie = sequelize.define(
 		},
 		sentAt: {
 			type: DataTypes.DATE,
+			defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
 			allowNull: true,
+			field: "sentAt",
 		},
 		createdAt: {
 			type: DataTypes.DATE,
-			defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
+			defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
+			field: "CreatedAt",
 		},
 		updatedAt: {
 			type: DataTypes.DATE,
-			defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
+			defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
+			field: "updatedAt",
 		},
 	},
 	{
