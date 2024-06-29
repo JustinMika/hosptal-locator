@@ -9,7 +9,7 @@ const Users: React.FC = () => {
 	const [users, setUsers] = useState<Array<UserProps>>([]);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [currentPage, setCurrentPage] = useState(1);
-	const [usersPerPage] = useState(5);
+	const [usersPerPage] = useState(9);
 
 	axios.defaults.withCredentials = true;
 	localStorage.setItem("page", "Liste des utilisateurs");
@@ -166,7 +166,7 @@ const Users: React.FC = () => {
 							<div className="overflow-hidden shadow">
 								<table className="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600">
 									<thead className="bg-gray-100 dark:bg-gray-700">
-										<tr>
+										<tr className="uppercase">
 											<th className="p-4 text-xs font-medium text-left text-gray-500 text-wrap uppercase dark:text-gray-400">
 												Pseudo|Nom
 											</th>
@@ -209,7 +209,7 @@ const Users: React.FC = () => {
 													{`-`}
 												</td>
 												<td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
-													{user?.latitude}
+													{user?.latitude ?? "-"}
 												</td>
 												<td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
 													{user?.longitude ?? "-"}

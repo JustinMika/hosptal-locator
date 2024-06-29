@@ -101,7 +101,7 @@ const Login: React.FC = () => {
 				setIsLeading2(false);
 			}
 		} catch (error) {
-			toast.error(`Erreur: Email et/ou mot de passe invalide.`, {
+			toast.error(`Erreur: ${error}`, {
 				position: "top-right",
 				autoClose: 9000,
 				hideProgressBar: false,

@@ -1,11 +1,14 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+// import fs from "fs";
 
-// https://vitejs.dev/config/
 export default defineConfig({
-	plugins: [react()],
 	server: {
-		host: true, // Écouter sur toutes les interfaces réseau
-		port: 5173, // Spécifiez le port que vous souhaitez utiliser (par exemple, 3000)
+		host: "0.0.0.0",
+		https: {
+			key: "./cert-key.pem",
+			cert: "./cert.pem",
+		},
 	},
+	plugins: [react()],
 });

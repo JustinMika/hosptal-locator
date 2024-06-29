@@ -1,12 +1,15 @@
 import { Avatar } from "flowbite-react";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { RootState } from "../../store/store";
 
 const SideBar = () => {
 	const [menu1, setMenu1] = useState<boolean>(false);
 	const [menu3, setMenu3] = useState<boolean>(false);
 	const [isMenuUserOpen, setisMenuUserOpen] = useState<boolean>(false);
 	const [isMenu, setisMenu] = useState<boolean>(false);
+	const user = useSelector((state: RootState) => state.user);
 
 	const noopen = `fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700 -translate-x-full`;
 	const open = `fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700 transform-none`;
@@ -82,9 +85,9 @@ const SideBar = () => {
 								}
 							>
 								<div className="px-4 py-3 text-sm text-gray-900 dark:text-white text-center">
-									<div>Justin Micah</div>
+									<div>{user?.pseudo}</div>
 									<div className="font-medium truncate">
-										justinmika@flowbite.com
+										{user?.email}
 									</div>
 								</div>
 								<ul

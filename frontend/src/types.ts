@@ -20,8 +20,8 @@ export interface initialFormDataUser {
 }
 
 export interface Hospital {
-	_id: string;
-	name: string;
+	id: string;
+	pseudo: string;
 	latitude: number;
 	longitude: number;
 }
@@ -66,4 +66,10 @@ export interface Messages {
 	sentAt?: number | Date | string;
 	createdAt?: number | Date | string;
 	updatedAt?: number | Date | string;
+}
+
+export interface Position {
+	latitude: number;
+	longitude: number;
+	accuracy: number;
 }
