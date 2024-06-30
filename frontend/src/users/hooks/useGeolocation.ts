@@ -19,8 +19,8 @@ const useGeolocation = () => {
 
 		const message =
 			accuracy > 50
-				? `Faible précision: ${accuracy.toFixed(2)} mettres`
-				: `Poste mis à jour: ${latitude}, ${longitude} avec une précision de: ${accuracy.toFixed(2)} mettre`;
+				? 'Faible précision: ' + accuracy.toFixed(2) + ' mettres'
+				: 'Poste mis à jour: ' + latitude + ', ' + longitude + ' avec une précision de: ' + accuracy.toFixed(2) + ' mettre';
 
 		if (notificationId) {
 			toast.update(notificationId, {

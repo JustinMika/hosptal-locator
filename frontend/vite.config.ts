@@ -6,8 +6,8 @@ export default defineConfig({
 	server: {
 		host: "0.0.0.0",
 		https: {
-			key: "./cert-key.pem",
-			cert: "./cert.pem",
+			key: "./localhost-key.pem",
+			cert: "./localhost-cert.pem",
 		},
 	},
 	plugins: [react()],
