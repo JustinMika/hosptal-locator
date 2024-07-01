@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const Utilisateur = require("../../models/Utilisateur");
+const User = require("../../models/Utilisateur");
 
 router.get("/", async (req, res) => {
 	try {
@@ -14,6 +15,21 @@ router.get("/", async (req, res) => {
 	} catch (error) {
 		console.error("Error fetching data:", error);
 		res.status(500).json({ error: "An error occurred while fetching data." });
+	}
+});
+
+router.get("/:type", async (req, res) => {
+	try {
+		const { type } = req.params;
+		const users = await User.findAll({
+			where: {
+				UserType: type,
+			},
+			attributes: ["id", "pseudo", "latitude", "longitude"], // Spécifiez les colonnes à sélectionner ici
+		});
+		res.json(users);
+	} catch (error) {
+		res.status(500).json({ message: "Error fetching users", error });
 	}
 });
 

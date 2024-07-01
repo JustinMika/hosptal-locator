@@ -24,6 +24,15 @@ const Alerte = sequelize.define(
 			allowNull: true,
 		},
 		status: {
+			type: DataTypes.ENUM("pendung", "finish", "unknow"),
+			allowNull: false,
+			field: "status",
+		},
+		latitude: {
+			type: DataTypes.STRING,
+			allowNull: true,
+		},
+		longitude: {
 			type: DataTypes.STRING,
 			allowNull: true,
 		},

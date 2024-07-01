@@ -35,20 +35,45 @@ app.use("/uploads", express.static(uploadsDirectory));
 app.use(express.urlencoded({ extended: true }));
 
 // Spécifier les origines autorisées
-const allowedOrigins = ["http://localhost:5173"];
+const allowedOrigins = ["http://localhost:5173", "https://localhost:5173"];
+
+// app.use(
+// 	cors({
+// 		origin: function (origin, callback) {
+// 			if (allowedOrigins.includes(origin) || !origin) {
+// 				callback(null, true);
+// 			} else {
+// 				console.log("Accès non autorisé par CORS");
+// 			}
+// 		},
+// 		allowedHeaders:
+// 			"Origin,X-Requested-With,Content-Type,Accept,Authorization",
+// 		exposedHeaders: ["X-Custom-Header"],
+// 		methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+// 		credentials: true,
+// 	})
+// );
+
+const corsOptions = {
+	origin: [
+		"https://localhost:5173",
+		"http://localhost:5173",
+		"https://miciiivix:5173",
+		"https://miciiivix:5173",
+		"https://192.168.1.100:5173",
+		"http://192.168.1.100:5173",
+		"https://192.168.1.101:5173",
+		"http://192.168.1.101:5173",
+	], // Permettre l'accès depuis n'importe quel domaine
+	methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+	allowedHeaders: "Origin,X-Requested-With,Content-Type,Accept,Authorization",
+};
+
+// app.use(cors(corsOptions));
 
 app.use(
 	cors({
-		origin: function (origin, callback) {
-			if (allowedOrigins.includes(origin) || !origin) {
-				callback(null, true);
-			} else {
-				console.log("Accès non autorisé par CORS");
-			}
-		},
-		allowedHeaders: ["Authorization", "Content-Type"],
-		exposedHeaders: ["X-Custom-Header"],
-		methods: ["POST", "GET", "OPTIONS", "PUT", "DELETE"],
+		origin: corsOptions,
 		credentials: true,
 	})
 );
