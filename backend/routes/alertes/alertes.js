@@ -1,12 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const VisiteSite = require("../../models/VisiteSite");
+const Alerte = require("../../models/Alerte");
 const { Sequelize } = require("sequelize");
 
 router.post("/", async (req, res) => {
 	const { userId } = req.body;
 	try {
-		const visite = await VisiteSite.create({ userId });
+		const visite = await Alerte.create({ userId });
 		res.json({ message: "Visit recorded successfully", visite });
 	} catch (error) {
 		res.status(500).json({ message: "Error recording visit", error });
@@ -15,24 +15,23 @@ router.post("/", async (req, res) => {
 
 router.get("/", async (req, res) => {
 	try {
-		const visites = await VisiteSite.findAll();
-		res.json(visites);
+		const alert = await Alerte.findAll();
+		res.json(alert);
 	} catch (error) {
 		res.status(500).json({ message: "Error fetching visits", error });
 	}
 });
 
 // Route pour récupérer les visites par mois
-// Route pour récupérer les visites par mois
 router.get("/visits-per-month", async (req, res) => {
 	try {
-		const visitsByMonth = await VisiteSite.findAll({
+		const visitsByMonth = await Alerte.findAll({
 			attributes: [
 				[
 					Sequelize.fn("DATE_FORMAT", Sequelize.col("createdAt"), "%m"),
 					"month",
 				],
-				[Sequelize.fn("COUNT", Sequelize.col("*")), "count"],
+				[Sequelize.fn("COUNT", Sequelize.col("id")), "count"],
 			],
 			group: [Sequelize.fn("DATE_FORMAT", Sequelize.col("createdAt"), "%m")],
 			order: Sequelize.fn("DATE_FORMAT", Sequelize.col("createdAt"), "%m"),
@@ -45,20 +44,4 @@ router.get("/visits-per-month", async (req, res) => {
 	}
 });
 
-// visistes par page
-router.get("/visits-per-page", async (req, res) => {
-	try {
-		const visiteCount = await VisiteSite.findAll({
-			attributes: [
-				"page",
-				[Sequelize.fn("COUNT", Sequelize.col("page")), "count"],
-			],
-			group: "page",
-		});
-
-		res.status(200).json(visiteCount);
-	} catch (error) {
-		res.status(500).json({ error: "Internal server error : " + error });
-	}
-});
 module.exports = router;

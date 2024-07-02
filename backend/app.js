@@ -105,5 +105,6 @@ app.use("/api/v1/hospitals/", require("./routes/hospitals/Hospitals"));
 app.use("/api/v1/visite-site/", require("./routes/visites/visiteSites"));
 app.use("/api/v1/admin/", require("./routes/admin/Admin"));
 app.use("/api/v1/messages/", require("./routes/messages/message"));
+app.use("/api/v1/alerts/", require("./routes/alertes/alertes"));
 
 module.exports = app;

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Utilisateur = require("../../models/Utilisateur");
 const bcrypt = require("bcrypt");
+const { Sequelize } = require("sequelize");
 
 const User = Utilisateur;
 
@@ -51,7 +52,6 @@ router.post("/create-admin-users/", async (req, res) => {
 			email: email,
 			password: hashedPassword,
 			userType: userType,
-			user_type: userType,
 		};
 		try {
 			const user = await Utilisateur.create(data);
@@ -78,6 +78,23 @@ router.delete("delete/{id}", async (req, res) => {
 		res.status(201).json({ message: "utilisateur supprime.", userDeleted });
 	} catch (error) {
 		res.status(500).json({ message: "Erreur" });
+	}
+});
+
+// stat users
+router.get("/user-stats/users", async (req, res) => {
+	try {
+		const userCounts = await Utilisateur.findAll({
+			attributes: [
+				"userType",
+				[Sequelize.fn("COUNT", Sequelize.col("userType")), "count"],
+			],
+			group: "userType",
+		});
+
+		res.status(200).json(userCounts);
+	} catch (error) {
+		res.status(500).json({ error: "Internal server error : " + error });
 	}
 });
 

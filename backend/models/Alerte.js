@@ -19,6 +19,14 @@ const Alerte = sequelize.define(
 				key: "id",
 			},
 		},
+		// userIdHostpital: {
+		// 	type: DataTypes.INTEGER,
+		// 	allowNull: false,
+		// 	references: {
+		// 		model: Utilisateur,
+		// 		key: "id",
+		// 	},
+		// },
 		message: {
 			type: DataTypes.TEXT,
 			allowNull: true,
@@ -53,4 +61,5 @@ const Alerte = sequelize.define(
 );
 
 Alerte.belongsTo(Utilisateur, { foreignKey: "userId" });
+Alerte.belongsTo(Utilisateur, { foreignKey: "userIdHostpital" });
 module.exports = Alerte;

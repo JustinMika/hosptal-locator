@@ -1,7 +1,6 @@
 // visite_sites.js
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/databases");
-const Utilisateur = require("./Utilisateur");
 
 const VisiteSite = sequelize.define(
 	"visite_sites",
@@ -17,19 +16,13 @@ const VisiteSite = sequelize.define(
 		},
 		createdAt: {
 			type: DataTypes.DATE,
-			defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
-			field: "createdAt",
-		},
-		updatedAt: {
-			type: DataTypes.DATE,
-			defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
-			field: "updatedAt",
+			defaultValue: DataTypes.NOW,
+			field: "createdAt", // Assurez-vous que le nom du champ correspond à votre base de données
 		},
 	},
 	{
-		timestamps: true,
-		underscored: true,
-		tableName: "visite_sites",
+		tableName: "visite_sites", // Assurez-vous que le nom de la table correspond à votre base de données
+		timestamps: false, // Si vous ne souhaitez pas utiliser les timestamps
 	}
 );
 

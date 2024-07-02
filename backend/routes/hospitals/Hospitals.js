@@ -8,7 +8,7 @@ router.get("/", async (req, res) => {
 	try {
 		const data = await Utilisateur.findAll({
 			where: {
-				userType: "hopital",
+				userType: "hospital",
 			},
 		});
 		res.json(data);
@@ -37,7 +37,7 @@ router.post("/add-hopital/", async (req, res) => {
 	try {
 		const { pseudo, email, latitude, longitude } = req.body;
 		if (pseudo && email && latitude && longitude) {
-			const userType = "hopital";
+			const userType = "hospital";
 			const hashedPassword = await bcrypt.hash("password", 10);
 
 			const data = {
