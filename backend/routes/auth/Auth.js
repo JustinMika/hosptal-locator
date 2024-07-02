@@ -50,6 +50,7 @@ router.post("/register", async (req, res) => {
 			},
 			process.env.JWT_TOKEN
 		);
+
 		res.json({
 			token,
 			userType: user.userType,
@@ -73,7 +74,7 @@ router.post("/login", async (req, res) => {
 		if (!isMatch) {
 			return res
 				.status(400)
-				.json({ message: "Email oet/ou mot de passe invalide." });
+				.json({ message: "Email et/ou mot de passe invalide." });
 		}
 		const token = jwt.sign(
 			{

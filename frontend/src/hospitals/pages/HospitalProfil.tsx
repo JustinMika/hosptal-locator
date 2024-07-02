@@ -5,74 +5,54 @@ import "react-toastify/dist/ReactToastify.css";
 import ContentAdmin from "../components/ContentAdmin";
 import { FormEvent, useState } from "react";
 import getMainUrlApi from "../../utils/getMainUrlApi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
+import { updateUser } from "../../store/slice/authSlice";
 
 const HospitalProfil = () => {
 	axios.defaults.withCredentials = true;
-	localStorage.setItem("page", "profil");
+	localStorage.setItem(
+		"page",
+		"Profil de l'utilisateur [Mise a jour des information de l'utilisateur...]"
+	);
 
 	window.document.title = "Profil";
+	axios.defaults.withCredentials = true;
+	localStorage.setItem("page", "profil utilisateur");
+	const dispatch = useDispatch();
 	const user = useSelector((state: RootState) => state.user);
 
 	window.document.title = "Profil utilisateur";
 	const [Email, setEmail] = useState<string | undefined>(user?.email);
 	const [Name, setName] = useState<string | undefined>(user?.pseudo);
-	const [Phone, setPhone] = useState<string>("+243 000 000 000");
+	const [Phone, setPhone] = useState<string | undefined>(user?.telephone);
 	axios.defaults.withCredentials = true;
 
-	const [pwd, setPwd] = useState("");
-	const [pwd2, setPwd2] = useState("");
+	const [old, setOld] = useState<string>("");
+	const [pwd, setPwd] = useState<string>("");
+	const [pwd2, setPwd2] = useState<string>("");
 
-	const handleSubmit = (e: FormEvent) => {
+	// update user informations
+	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
-		const data = {
-			name: Name,
-			email: Email,
-			numero: Phone,
-		};
-		axios
-			.put(`${getMainUrlApi()}/update-user-infos/`, data)
-			.then((data) => {
-				toast.info(`${data.data.message}🫡`, {
-					position: "top-right",
-					autoClose: 2000,
-					hideProgressBar: false,
-					closeOnClick: false,
-					pauseOnHover: true,
-					draggable: true,
-					progress: undefined,
-					theme: "light",
-				});
-				window.location.reload();
-			})
-			.catch((err) => {
-				toast.error(`Erreur : ${err?.response?.data?.message}🫡`, {
-					position: "top-right",
-					autoClose: 2000,
-					hideProgressBar: false,
-					closeOnClick: false,
-					pauseOnHover: true,
-					draggable: true,
-					progress: undefined,
-					theme: "light",
-				});
-			});
-	};
-
-	// update le  mot de passe
-	const handleChangePasswordSubmit = (e: FormEvent) => {
-		e.preventDefault();
-		const data = {
-			pwd: pwd,
-			pwd2: pwd2,
-		};
-		// console.log(data)
-		if (pwd == pwd2) {
-			axios
-				.put(`${getMainUrlApi()}/update-user-infos-password/`, data)
+		if (Name && Email && Phone) {
+			const data = {
+				name: Name,
+				email: Email,
+				numero: Phone,
+			};
+			await axios
+				.put(
+					`${getMainUrlApi()}users/user/update-user-infos/${
+						user?.id
+					}/`,
+					data
+				)
 				.then((data) => {
-					toast.info(`${data.data.message}🫡`, {
+					const { user } = data.data;
+
+					dispatch(updateUser(user));
+					toast.info(`${data.data.message ?? "Success."}🫡`, {
 						position: "top-right",
 						autoClose: 2000,
 						hideProgressBar: false,
@@ -85,7 +65,7 @@ const HospitalProfil = () => {
 					window.location.reload();
 				})
 				.catch((err) => {
-					toast.error(`Erreur : ${err?.response?.data?.message}🫡`, {
+					toast.error(`Erreur : ${err?.message}🫡`, {
 						position: "top-right",
 						autoClose: 2000,
 						hideProgressBar: false,
@@ -97,7 +77,64 @@ const HospitalProfil = () => {
 					});
 				});
 		} else {
-			toast.error(`le s deux mot de passent ne correspodent pas.`, {
+			toast.error(`❌ Veuillez remplir tous les champs.`, {
+				position: "top-right",
+				autoClose: 2000,
+				hideProgressBar: false,
+				closeOnClick: false,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+				theme: "light",
+			});
+		}
+	};
+
+	// update le  mot de passe
+	const handleChangePasswordSubmit = (e: FormEvent) => {
+		e.preventDefault();
+		const data = {
+			old: old,
+			pwd: pwd,
+			pwd2: pwd2,
+		};
+		if (pwd == pwd2) {
+			axios
+				.put(
+					`${getMainUrlApi()}users/user/update-user-password/${
+						user?.id
+					}/`,
+					data
+				)
+				.then((data) => {
+					toast.info(`${data.data.message}🫡`, {
+						position: "top-right",
+						autoClose: 2000,
+						hideProgressBar: false,
+						closeOnClick: false,
+						pauseOnHover: true,
+						draggable: true,
+						progress: undefined,
+						theme: "colored",
+					});
+					setOld("");
+					setPwd("");
+					setPwd2("");
+				})
+				.catch((err) => {
+					toast.error(`Erreur : ${err?.response?.data?.message}🫡`, {
+						position: "top-right",
+						autoClose: 2000,
+						hideProgressBar: false,
+						closeOnClick: false,
+						pauseOnHover: true,
+						draggable: true,
+						progress: undefined,
+						theme: "colored",
+					});
+				});
+		} else {
+			toast.error(`les deux mot de passent ne correspodent pas.`, {
 				position: "top-center",
 				autoClose: 9000,
 				hideProgressBar: false,
@@ -112,10 +149,10 @@ const HospitalProfil = () => {
 	return (
 		<ContentAdmin>
 			<ToastContainer />
-			<div className="grid md:grid-cols-2 sm:grid-cols-1 gap-8">
+			<div className="grid md:grid-cols-2 sm:grid-cols-1 gap-8 px-4">
 				{/* informations */}
-				<div className="p-3">
-					<div className="rounded-sm border border-stroke bg-white shadow-default">
+				<div className="p-2">
+					<div className="rounded-sm border border-stroke bg-white shadow-default shadow-md">
 						<div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
 							<h3 className="font-medium text-black dark:text-white">
 								Informations Personelles
@@ -180,11 +217,11 @@ const HospitalProfil = () => {
 										</label>
 										<input
 											className="w-full rounded border border-stroke bg-gray py-1 px-2 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-											type="text"
+											type="number"
 											name="phoneNumber"
 											id="phoneNumber"
-											placeholder={``}
-											value={Phone ?? "-"}
+											placeholder={`000 000 000 000`}
+											value={Phone ?? ""}
 											onChange={(e) => {
 												setPhone(e.target.value);
 											}}
@@ -258,8 +295,8 @@ const HospitalProfil = () => {
 				</div>
 
 				{/* mot de passe */}
-				<div className="p-3">
-					<div className="rounded-sm border border-stroke bg-white shadow-default">
+				<div className="p-2">
+					<div className="rounded-sm border border-stroke bg-white shadow-default shadow-md">
 						<div className="border-b border-stroke px-2 py-2 dark:border-strokedark">
 							<h3 className="font-medium text-black dark:text-white">
 								Gestion de mot de passe
@@ -270,47 +307,74 @@ const HospitalProfil = () => {
 								action="#"
 								onSubmit={handleChangePasswordSubmit}
 							>
-								<div className="mb-3 flex flex-col gap-5 sm:flex-row">
-									<div className="w-full sm:w-1/2">
+								<div className="mb-3 ">
+									<div className="mb-3">
 										<label
 											className="mb-3 block text-sm font-medium text-black dark:text-white"
-											htmlFor="fullName"
+											htmlFor="oldPassWord"
 										>
-											Mot de passe
+											Ancien mot de passe
 										</label>
 										<div className="relative">
 											<input
-												className="w-full rounded border border-stroke bg-gray py-1 px-2 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:text-white dark:focus:border-primary"
+												className="w-full rounded border border-stroke bg-gray py-1 pl-2 pr-4 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
 												type="password"
-												name="pwd"
-												id="pwd"
-												placeholder="Mot de passe"
-												value={pwd}
+												name="oldPassWord"
+												id="oldPassWord"
+												placeholder={`Ancien mot de password`}
+												value={old ?? "-"}
 												onChange={(e) => {
-													setPwd(e.target.value);
+													setOld(e.target.value);
 												}}
+												required
 											/>
 										</div>
 									</div>
 
-									<div className="w-full sm:w-1/2">
-										<label
-											className="mb-3 block text-sm font-medium text-black dark:text-white"
-											htmlFor="pwd2"
-										>
-											confirmer le mot de passe
-										</label>
-										<input
-											className="w-full rounded border border-stroke bg-gray py-1 px-2 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-											type="password"
-											name="pwd2"
-											id="pwd2"
-											placeholder="confirmer le mot de passe"
-											value={pwd2}
-											onChange={(e) => {
-												setPwd2(e.target.value);
-											}}
-										/>
+									<div className="flex flex-col gap-5 sm:flex-row">
+										<div className="w-full sm:w-1/2">
+											<label
+												className="mb-3 block text-sm font-medium text-black dark:text-white"
+												htmlFor="fullName"
+											>
+												Mot de passe
+											</label>
+											<div className="relative">
+												<input
+													className="w-full rounded border border-stroke bg-gray py-1 px-2 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:text-white dark:focus:border-primary"
+													type="password"
+													name="pwd"
+													id="pwd"
+													placeholder="Nouveau mot de passe"
+													value={pwd}
+													onChange={(e) => {
+														setPwd(e.target.value);
+													}}
+													required
+												/>
+											</div>
+										</div>
+
+										<div className="w-full sm:w-1/2">
+											<label
+												className="mb-3 block text-sm font-medium text-black dark:text-white"
+												htmlFor="pwd2"
+											>
+												Confirmer le mot de passe
+											</label>
+											<input
+												className="w-full rounded border border-stroke bg-gray py-1 px-2 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+												type="password"
+												name="pwd2"
+												id="pwd2"
+												placeholder="Confirmer le nouveau mot de passe"
+												value={pwd2}
+												onChange={(e) => {
+													setPwd2(e.target.value);
+												}}
+												required
+											/>
+										</div>
 									</div>
 								</div>
 								<div className="flex justify-end gap-2">

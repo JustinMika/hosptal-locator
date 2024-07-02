@@ -34,26 +34,6 @@ app.use("/uploads", express.static(uploadsDirectory));
 
 app.use(express.urlencoded({ extended: true }));
 
-// Spécifier les origines autorisées
-const allowedOrigins = ["http://localhost:5173", "https://localhost:5173"];
-
-// app.use(
-// 	cors({
-// 		origin: function (origin, callback) {
-// 			if (allowedOrigins.includes(origin) || !origin) {
-// 				callback(null, true);
-// 			} else {
-// 				console.log("Accès non autorisé par CORS");
-// 			}
-// 		},
-// 		allowedHeaders:
-// 			"Origin,X-Requested-With,Content-Type,Accept,Authorization",
-// 		exposedHeaders: ["X-Custom-Header"],
-// 		methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
-// 		credentials: true,
-// 	})
-// );
-
 const corsOptions = {
 	origin: [
 		"https://localhost:5173",
@@ -69,8 +49,6 @@ const corsOptions = {
 	allowedHeaders: "Origin,X-Requested-With,Content-Type,Accept,Authorization",
 };
 
-// app.use(cors(corsOptions));
-
 app.use(
 	cors({
 		origin: corsOptions,
@@ -78,15 +56,14 @@ app.use(
 	})
 );
 
-// ============ les routes =============================
+// ============================== les routes =============================
 app.get("/", async (req, res) => {
-	// Utiliser useragent pour obtenir le nom du navigateur
 	const userAgentString = req.headers["user-agent"];
 	let browserName = userAgentString;
 
 	try {
 		const userAgent = useragent.lookup(userAgentString);
-		browserName = userAgent.family; // Obtenir le nom du navigateur
+		browserName = userAgent.family;
 		res.status(200).json({
 			message: "API from Hospital Location",
 			ip: req.ip,

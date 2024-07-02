@@ -19,14 +19,14 @@ const Alerte = sequelize.define(
 				key: "id",
 			},
 		},
-		// userIdHostpital: {
-		// 	type: DataTypes.INTEGER,
-		// 	allowNull: false,
-		// 	references: {
-		// 		model: Utilisateur,
-		// 		key: "id",
-		// 	},
-		// },
+		userIdHostpital: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+			references: {
+				model: Utilisateur,
+				key: "id",
+			},
+		},
 		message: {
 			type: DataTypes.TEXT,
 			allowNull: true,
