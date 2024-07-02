@@ -11,12 +11,13 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-routing-machine";
 import useGeolocation from "./useGeolocation";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Hospital } from "../../types";
 import axios from "axios";
 import haversineDistance from "../../utils/haversineDistance";
 import getMainUrlApi from "../../utils/getMainUrlApi";
+import getAccuracyMessage from "../../utils/getAccuracyMessage";
 
 const hospitalIcon = new L.Icon({
 	iconUrl: "/images/hopitalIcon.png", // Assurez-vous que le chemin est correct
@@ -37,7 +38,10 @@ const UpdateMapCenter: React.FC<{ position: [number, number] }> = ({
 	return null;
 };
 
-const CustomZoomControl: React.FC = () => {
+// CustomZoomControl
+const CustomZoomControl: React.FC<{
+	nearestHospital: Hospital | undefined;
+}> = ({ nearestHospital }) => {
 	const map = useMap();
 
 	const zoomIn = () => {
@@ -50,31 +54,64 @@ const CustomZoomControl: React.FC = () => {
 
 	return (
 		<div
-			className="zoom-controls_ flex justify-between items-center gap-5"
+			className="zoom-controls flex justify-between items-center gap-5"
 			style={{ position: "absolute", top: 10, right: 10, zIndex: 1000 }}
 		>
-			<button className="flex flex-col justify-center items-center w-full bg-red-600 p-2 gap-2 rounded-full animate-ping" onClick={() => {
-				alert("ALert")
-			}}>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					strokeWidth={1.5}
-					stroke="currentColor"
-					className="w-6 h-6 text-white"
+			{nearestHospital && (
+				<button
+					className="flex flex-row justify-center items-center w-32 bg-green-600 p-2 gap-2 rounded-full"
+					onClick={() => {}}
 				>
-					<path
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0M3.124 7.5A8.969 8.969 0 0 1 5.292 3m13.416 0a8.969 8.969 0 0 1 2.168 4.5"
-					/>
-				</svg>
-				<span className="text-white font-bold">Alerter</span>
-			</button>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						strokeWidth={1.5}
+						stroke="currentColor"
+						className="w-6 text-white"
+					>
+						<path
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+						/>
+						<path
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
+						/>
+					</svg>
+					<span className="text-white font-bold">
+						Tracer le chemin
+					</span>
+				</button>
+			)}
+
+			{nearestHospital && (
+				<button
+					className="flex flex-row justify-center items-center w-24 bg-red-600 p-2 gap-2 rounded-full"
+					onClick={() => {}}
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						strokeWidth={1.5}
+						stroke="currentColor"
+						className="w-6 h-6 text-white"
+					>
+						<path
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0M3.124 7.5A8.969 8.969 0 0 1 5.292 3m13.416 0a8.969 8.969 0 0 1 2.168 4.5"
+						/>
+					</svg>
+					<span className="text-white font-bold">Alerter</span>
+				</button>
+			)}
+
 			<button
 				onClick={zoomIn}
-				// style={{ display: "block", marginBottom: 5 }}
 				className="flex flex-col justify-center items-center w-full"
 			>
 				<svg
@@ -117,42 +154,9 @@ const CustomZoomControl: React.FC = () => {
 	);
 };
 
-const getAccuracyMessage = (accuracy: number) => {
-	if (accuracy <= 10) return "Précision élevée";
-	if (accuracy <= 50) return "Précision moyenne";
-	return "Précision faible";
-};
-
-const RoutingControl: React.FC<{
-	from: [number, number];
-	to: [number, number];
-}> = ({ from, to }) => {
-	const map = useMap();
-
-	useEffect(() => {
-		const routingControl = L.Routing.control({
-			waypoints: [L.latLng(from[0], from[1]), L.latLng(to[0], to[1])],
-			lineOptions: {
-				styles: [{ color: "blue", weight: 4 }],
-			},
-			createMarker: () => null, // Pour éviter de créer des marqueurs supplémentaires
-			show: false,
-			addWaypoints: false,
-		}).addTo(map);
-
-		return () => {
-			map.removeControl(routingControl);
-		};
-	}, [from, to, map]);
-
-	return null;
-};
-
 const MapComponent: React.FC = () => {
 	const [hospitals, setHospitals] = useState<Hospital[]>([]);
-	const [nearestHospital, setNearestHospital] = useState<Hospital | null>(
-		null
-	);
+	const [nearestHospital, setNearestHospital] = useState<Hospital>();
 
 	const { position } = useGeolocation();
 	const [mapPosition, setMapPosition] = useState<[number, number] | null>(
@@ -197,87 +201,109 @@ const MapComponent: React.FC = () => {
 					setNearestHospital(nearest);
 				}
 			} catch (error) {
-				console.error("Error fetching data:");
-				toast.error("Error fetching data.");
+				console.error("Error fetching data.");
 			}
 		};
 
 		fetchData();
 	}, [position]);
 
-	useEffect(() => {
-		if (userMarkerRef.current) {
-			userMarkerRef.current.openPopup();
-		}
-	}, [mapPosition]);
-
 	return (
 		<>
-			<MapContainer
-				center={mapPosition || defaultCenter}
-				zoom={12}
-				style={{ height: "89vh", width: "100%" }}
-			>
-				<TileLayer
-					url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-					attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-				/>
-				{mapPosition && (
-					<>
-						<Marker position={mapPosition} ref={userMarkerRef}>
-							<Popup>
-								Votre poste actuel Vous êtes ici. <br />
-								Précision: {position?.accuracy.toFixed(2)}{" "}
-								mètres (
-								{getAccuracyMessage(position?.accuracy ?? 0)}).{" "}
-								<br />
-								Lat : {position?.latitude ?? "NaN"}; Long:{" "}
-								{position?.longitude ?? "NaN"}
-							</Popup>
-						</Marker>
-						<Circle
-							center={mapPosition}
-							radius={3000} // Rayon de 3 km
-							color="blue"
-							fillColor="blue"
-							fillOpacity={0.3}
+			{!hospitals ? (
+				<p className="text-2xl text-gray-400 dark:text-gray-500 text-center flex flex-col justify-center items-center gap-6">
+					<svg
+						className="w-12 h-12 animate-spin"
+						aria-hidden="true"
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 18 18"
+					>
+						<path
+							stroke="currentColor"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							strokeWidth="2"
+							d="M9 1v16M1 9h16"
 						/>
-						{hospitals.map((hospital) => (
-							<Marker
-								key={hospital.id}
-								position={[
-									hospital.latitude,
-									hospital.longitude,
-								]}
-								icon={hospitalIcon}
-							>
+					</svg>
+					<h3 className="text-gray-500 italic text-center">
+						Chargement des hopitaux encours, ...
+					</h3>
+				</p>
+			) : (
+				""
+			)}
+
+			{hospitals && (
+				<MapContainer
+					center={mapPosition || defaultCenter}
+					zoom={12}
+					style={{ height: "89vh", width: "100%" }}
+				>
+					<TileLayer
+						url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+						attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+					/>
+					{mapPosition && (
+						<>
+							<Marker position={mapPosition} ref={userMarkerRef}>
 								<Popup>
-									Hopital : {hospital.pseudo} <br />
-									Lat : {hospital?.latitude ?? "NaN"}; Long:{" "}
-									{hospital?.longitude ?? "NaN"} <br />
-									Précision: Environs{" "}
-									{haversineDistance(
-										[hospital.latitude, hospital.longitude],
-										mapPosition
+									Vous êtes ici. <br />
+									Précision: {position?.accuracy.toFixed(
+										2
 									)}{" "}
-									km
+									mètres (
+									{getAccuracyMessage(
+										position?.accuracy ?? 0
+									)}
+									). <br />
+									Lat : {position?.latitude ?? "NaN"}; Long:{" "}
+									{position?.longitude ?? "NaN"}
 								</Popup>
 							</Marker>
-						))}
-						{nearestHospital && (
-							<RoutingControl
-								from={mapPosition}
-								to={[
-									nearestHospital.latitude,
-									nearestHospital.longitude,
-								]}
+							<Circle
+								center={mapPosition}
+								radius={3000} // Rayon de 3 km
+								color="blue"
+								fillColor="blue"
+								fillOpacity={0.3}
 							/>
-						)}
-						<UpdateMapCenter position={mapPosition} />
-					</>
-				)}
-				<CustomZoomControl />
-			</MapContainer>
+							{hospitals.map((hospital) => (
+								<Marker
+									key={hospital.id}
+									position={[
+										hospital.latitude,
+										hospital.longitude,
+									]}
+									icon={hospitalIcon}
+								>
+									<Popup>
+										Hopital : {hospital.pseudo} <br />
+										Lat : {hospital?.latitude ?? "NaN"};
+										Long: {hospital?.longitude ?? "NaN"}{" "}
+										<br />
+										Précision: Environs{" "}
+										{haversineDistance(
+											[
+												hospital.latitude,
+												hospital.longitude,
+											],
+											mapPosition
+										)}{" "}
+										km
+									</Popup>
+								</Marker>
+							))}
+							<UpdateMapCenter position={mapPosition} />
+						</>
+					)}
+					<CustomZoomControl
+						nearestHospital={nearestHospital ?? undefined}
+					/>
+				</MapContainer>
+			)}
+
 			<ToastContainer />
 		</>
 	);

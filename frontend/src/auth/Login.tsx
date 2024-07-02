@@ -69,7 +69,7 @@ const Login: React.FC = () => {
 				if (userType === "user") {
 					const url = `/users/dashboard`;
 					navigate(url);
-				} else if (userType === "hopital") {
+				} else if (userType === "hospital") {
 					const url = `/hospital/dashboard/`;
 					navigate(url);
 				} else if (userType === "admin") {

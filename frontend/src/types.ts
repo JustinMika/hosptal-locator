@@ -71,5 +71,11 @@ export interface Messages {
 export interface Position {
 	latitude: number;
 	longitude: number;
-	accuracy: number;
+	accuracy?: number;
+}
+
+export interface UserStat {
+	userType: string;
+	count: number;
+	page?: string;
 }

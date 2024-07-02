@@ -18,7 +18,7 @@ const ListHospital: React.FC = () => {
 	const [filteredUsers, setFilteredUsers] = useState<Array<UserProps>>([]);
 
 	const [currentPage, setCurrentPage] = useState(1);
-	const [usersPerPage, setusersPerPage] = useState<number>(5);
+	const [usersPerPage, setusersPerPage] = useState<number>(10);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -178,7 +178,7 @@ const ListHospital: React.FC = () => {
 										<td className="py-2 px-4 border">
 											{hospialLists.longitude ?? "-"}
 										</td>
-										<td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
+										<td className="py-2 px-4 border p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
 											{new Date(
 												hospialLists.createdAt
 											).toLocaleString()}

@@ -1,3 +1,4 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
 import { useState, useEffect } from "react";
 import { Id, toast } from "react-toastify";
 
@@ -19,8 +20,14 @@ const useGeolocation = () => {
 
 		const message =
 			accuracy > 50
-				? 'Faible précision: ' + accuracy.toFixed(2) + ' mettres'
-				: 'Poste mis à jour: ' + latitude + ', ' + longitude + ' avec une précision de: ' + accuracy.toFixed(2) + ' mettre';
+				? "Précision Faible: " + accuracy.toFixed(2) + " mettres"
+				: "Position mis à jour: " +
+				  latitude +
+				  ", " +
+				  longitude +
+				  " avec une précision de: " +
+				  accuracy.toFixed(2) +
+				  " mettre";
 
 		if (notificationId) {
 			toast.update(notificationId, {
@@ -41,7 +48,7 @@ const useGeolocation = () => {
 	const onError = (error: GeolocationPositionError) => {
 		setError(error.message);
 
-		const errorMessage = `Error: ${error.message}`;
+		const errorMessage = `Error: Impossible d'obtenir la localisation`;
 
 		if (notificationId) {
 			toast.update(notificationId, {
@@ -59,11 +66,13 @@ const useGeolocation = () => {
 
 	useEffect(() => {
 		if (!navigator.geolocation) {
-			setError("Geolocation is not supported by your browser");
+			setError(
+				"La géolocalisation n'est pas prise en charge par votre navigateur"
+			);
 			const newNotificationId = toast.error(
-				"Geolocation is not supported by your browser",
+				"La géolocalisation n'est pas prise en charge par votre navigateur",
 				{
-					autoClose: false, // Ne ferme pas automatiquement la notification
+					autoClose: 1, // Ne ferme pas automatiquement la notification
 				}
 			);
 			setNotificationId(newNotificationId);
