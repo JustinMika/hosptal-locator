@@ -33,25 +33,25 @@ const RoutingMachine: React.FC<RoutingMachineProps> = ({
 	const map = useMap();
 
 	useEffect(() => {
-		if (position && position) {
-			// Supprimer les contrôles de routage existants
+		if (position && positionUser) {
+			// Remove existing routing controls
 			map.eachLayer((layer) => {
 				if (layer instanceof L.Routing.Control) {
 					map.removeLayer(layer);
 				}
 			});
 
-			// Ajouter un nouveau contrôle de routage
+			// Add new routing control
 			L.Routing.control({
 				waypoints: [
 					L.latLng(position[0], position[1]),
-					L.latLng(positionUser?.[0] ?? 0, positionUser?.[1] ?? 0),
+					L.latLng(positionUser[0], positionUser[1]),
 				],
 				routeWhileDragging: true,
-				lineOptions: [],
-				createMarker: function () {
-					return null;
-				}, // Supprimer les marqueurs pour éviter les doublons
+				lineOptions: {
+					extendToWaypoints: true,
+					missingRouteTolerance: 10, // Example value, you can adjust it as needed
+				}, // Remove markers to avoid duplicates
 			}).addTo(map);
 		}
 	}, [position, map, positionUser]);
@@ -107,17 +107,19 @@ const LocatePatient: React.FC = () => {
 						url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 						attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 					/>
-					<Marker position={mapPosition} icon={hospitalIcon}>
-						<Popup>
-							<span className="text-center">
-								Vous êtes ici. <br />
-							</span>
-							<b className="my-2 font-bold">{user?.pseudo}</b>
-							<br />
-						</Popup>
-					</Marker>
+					{mapPosition && (
+						<Marker position={mapPosition} icon={hospitalIcon}>
+							<Popup>
+								<span className="text-center">
+									Vous êtes ici. <br />
+								</span>
+								<b className="my-2 font-bold">{user?.pseudo}</b>
+								<br />
+							</Popup>
+						</Marker>
+					)}
 					<Circle
-						center={mapPosition}
+						center={mapPosition ? mapPosition : defaultCenter}
 						radius={3000}
 						color="blue"
 						fillColor="blue"
