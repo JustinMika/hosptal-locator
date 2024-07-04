@@ -27,7 +27,7 @@ const UsersMessages = () => {
 	// recuperationdes utilisateurs clients
 	useEffect(() => {
 		axios
-			.get(`${getMainUrlApi()}users/hopital`)
+			.get(`${getMainUrlApi()}users/hospital`)
 			.then((data) => {
 				setUsers(data.data);
 			})

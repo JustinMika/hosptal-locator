@@ -7,7 +7,6 @@ import axios from "axios";
 import getMainUrlApi from "../../utils/getMainUrlApi";
 import { toast } from "react-toastify";
 
-
 const CustomZoomControl: React.FC<{
 	nearestHospital: Hospital | undefined;
 	positionUser: [number, number] | undefined;
@@ -53,36 +52,6 @@ const CustomZoomControl: React.FC<{
 		>
 			{nearestHospital && (
 				<button
-					className="flex flex-row justify-center items-center w-32 bg-green-600 p-2 gap-2 rounded-full"
-					onClick={() => {}}
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						strokeWidth={1.5}
-						stroke="currentColor"
-						className="w-6 text-white"
-					>
-						<path
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-						/>
-						<path
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
-						/>
-					</svg>
-					<span className="text-white font-bold">
-						Tracer le chemin
-					</span>
-				</button>
-			)}
-
-			{nearestHospital && (
-				<button
 					className="flex flex-row justify-center items-center w-24 bg-red-600 p-2 gap-2 rounded-full"
 					onClick={() => {
 						Alerter();
@@ -108,7 +77,7 @@ const CustomZoomControl: React.FC<{
 
 			<button
 				onClick={zoomIn}
-				className="flex flex-col justify-center items-center w-full"
+				className="flex flex-row justify-center items-center w-32 bg-green-600 p-2 gap-2 rounded-full"
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -116,7 +85,7 @@ const CustomZoomControl: React.FC<{
 					viewBox="0 0 24 24"
 					strokeWidth={1.5}
 					stroke="currentColor"
-					className="size-6"
+					className="size-6 text-white"
 				>
 					<path
 						strokeLinecap="round"
@@ -128,7 +97,7 @@ const CustomZoomControl: React.FC<{
 			</button>
 			<button
 				onClick={zoomOut}
-				className="flex flex-col justify-center items-center w-full"
+				className="flex flex-row justify-center items-center w-32 bg-green-600 p-2 gap-2 rounded-full"
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -136,7 +105,7 @@ const CustomZoomControl: React.FC<{
 					viewBox="0 0 24 24"
 					strokeWidth={1.5}
 					stroke="currentColor"
-					className="w-6 h-6 items-center"
+					className="w-6 h-6 items-center text-white"
 				>
 					<path
 						strokeLinecap="round"

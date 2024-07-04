@@ -13,7 +13,7 @@ import "leaflet-routing-machine";
 import useGeolocation from "./useGeolocation";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Hospital } from "../../types";
+import { Hospital, RoutingMachineProps } from "../../types";
 import axios from "axios";
 import haversineDistance from "../../utils/haversineDistance";
 import getMainUrlApi from "../../utils/getMainUrlApi";
@@ -35,6 +35,39 @@ const UpdateMapCenter: React.FC<{ position: [number, number] }> = ({
 	useEffect(() => {
 		map.setView(position, map.getZoom());
 	}, [position, map]);
+
+	return null;
+};
+
+const RoutingMachine: React.FC<RoutingMachineProps> = ({
+	position,
+	hospital,
+}) => {
+	const map = useMap();
+
+	useEffect(() => {
+		if (position && hospital) {
+			// Remove existing routing controls
+			map.eachLayer((layer) => {
+				if (layer instanceof L.Routing.Control) {
+					map.removeLayer(layer);
+				}
+			});
+
+			// Add new routing control
+			L.Routing.control({
+				waypoints: [
+					L.latLng(position[0], position[1]),
+					L.latLng(hospital.latitude, hospital.longitude),
+				],
+				routeWhileDragging: true,
+				lineOptions: {
+					extendToWaypoints: true,
+					missingRouteTolerance: 10, // Example value, you can adjust it as needed
+				}, // Remove markers to avoid duplicates
+			}).addTo(map);
+		}
+	}, [position, map, hospital]);
 
 	return null;
 };
@@ -187,6 +220,12 @@ const MapComponent: React.FC = () => {
 						nearestHospital={nearestHospital ?? undefined}
 						positionUser={mapPosition}
 					/>
+					{mapPosition && nearestHospital && (
+						<RoutingMachine
+							position={mapPosition}
+							hospital={nearestHospital ?? undefined}
+						/>
+					)}
 				</MapContainer>
 			)}
 
