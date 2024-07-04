@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ContentAdmin from "../components/ContentAdmin";
 import axios from "axios";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import getMainUrlApi from "../../utils/getMainUrlApi";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
@@ -41,25 +41,52 @@ const ALertesHospital: React.FC = () => {
 	window.document.title = "Alerte des utilisateurs";
 	const user = useSelector((state: RootState) => state.user);
 
-	const [alert, setalert] = useState<Array<Alerte>>([]);
+	const [alert, setAlerts] = useState<Array<Alerte>>([]);
 	const [searchQuery, setSearchQuery] = useState<string>("");
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [alertPerPage] = useState<number>(5);
 
 	useEffect(() => {
+		// Création de l'élément audio
+		const audioElement = document.createElement("audio");
+		audioElement.id = "musicplayer";
+		audioElement.autoplay = true;
 		const getData = async () => {
-			await axios
-				.get(`${getMainUrlApi()}alerts/all-my-alertes/${user?.id}`)
-				.then((data) => {
-					console.log(data.data);
-					setalert(data.data);
-				})
-				.catch((err) => {
-					console.log(err);
-				});
+			try {
+				const response = await axios.get(
+					`${getMainUrlApi()}alerts/all-my-alertes/${user?.id}`
+				);
+				if (alert.length >= 1 && response.data.length > alert.length) {
+					toast.info("Une nouvelle alerte.");
+
+					// Création de l'élément source
+					const sourceElement = document.createElement("source");
+					// /sounds/sirenAalert.wav
+					sourceElement.src = "/sounds/sirenAalert.wav";
+					audioElement.appendChild(sourceElement);
+
+					audioElement.addEventListener("ended", () => {
+						document.body.removeChild(audioElement);
+					});
+
+					// Ajout de l'élément audio à la fin du body
+					// document.body.appendChild(audioElement);
+				}
+				setAlerts(response.data);
+			} catch (error) {
+				console.log(error);
+			}
 		};
-		getData();
-	}, [user?.id]);
+
+		const interval = setInterval(() => {
+			if (user?.id) {
+				getData();
+			}
+		}, 1000); // 1000 ms = 1 seconde
+
+		return () => clearInterval(interval);
+		// Nettoyage de l'intervalle lors du démontage
+	}, [alert.length, user?.id]);
 
 	// Filtrer les utilisateurs en fonction de la recherche
 	const filteredalert = alert?.filter(
@@ -315,6 +342,9 @@ const ALertesHospital: React.FC = () => {
 				</div>
 				{/*  */}
 			</main>
+			<audio id="musicplayer" autoPlay>
+				<source src="/sounds/sirenAalert.wav" />
+			</audio>
 		</ContentAdmin>
 	);
 };

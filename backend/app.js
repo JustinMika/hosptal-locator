@@ -44,6 +44,7 @@ const corsOptions = {
 		"http://192.168.1.100:5173",
 		"https://192.168.1.101:5173",
 		"http://192.168.1.101:5173",
+		"https://192.168.1.100:5173",
 	], // Permettre l'accès depuis n'importe quel domaine
 	methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 	allowedHeaders: "Origin,X-Requested-With,Content-Type,Accept,Authorization",
