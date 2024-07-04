@@ -1,4 +1,3 @@
-// alertes.js
 const { DataTypes, Sequelize } = require("sequelize");
 const sequelize = require("../config/databases");
 const Utilisateur = require("./Utilisateur");
@@ -32,7 +31,7 @@ const Alerte = sequelize.define(
 			allowNull: true,
 		},
 		status: {
-			type: DataTypes.ENUM("pendung", "finish", "unknow"),
+			type: DataTypes.ENUM("pending", "finish", "unknow"),
 			allowNull: false,
 			field: "status",
 		},
@@ -60,6 +59,6 @@ const Alerte = sequelize.define(
 	}
 );
 
-Alerte.belongsTo(Utilisateur, { foreignKey: "userId" });
+Alerte.belongsTo(Utilisateur, { foreignKey: "userId", as: "user" });
 Alerte.belongsTo(Utilisateur, { foreignKey: "userIdHostpital" });
 module.exports = Alerte;

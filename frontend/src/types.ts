@@ -33,7 +33,7 @@ export interface LocationMarkerProps {
 
 export interface RoutingMachineProps {
 	position: [number, number] | null;
-	hospital: Hospital | null;
+	hospital: Hospital | [number, number] | null;
 }
 
 export interface Alerte {

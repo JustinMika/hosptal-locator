@@ -18,6 +18,7 @@ import axios from "axios";
 import haversineDistance from "../../utils/haversineDistance";
 import getMainUrlApi from "../../utils/getMainUrlApi";
 import getAccuracyMessage from "../../utils/getAccuracyMessage";
+import CustomZoomControl from "./CustomZoomControl";
 
 const hospitalIcon = new L.Icon({
 	iconUrl: "/images/hopitalIcon.png", // Assurez-vous que le chemin est correct
@@ -38,130 +39,14 @@ const UpdateMapCenter: React.FC<{ position: [number, number] }> = ({
 	return null;
 };
 
-// CustomZoomControl
-const CustomZoomControl: React.FC<{
-	nearestHospital: Hospital | undefined;
-}> = ({ nearestHospital }) => {
-	const map = useMap();
-
-	const zoomIn = () => {
-		map.setZoom(map.getZoom() + 1);
-	};
-
-	const zoomOut = () => {
-		map.setZoom(map.getZoom() - 1);
-	};
-
-	return (
-		<div
-			className="zoom-controls flex justify-between items-center gap-5"
-			style={{ position: "absolute", top: 10, right: 10, zIndex: 1000 }}
-		>
-			{nearestHospital && (
-				<button
-					className="flex flex-row justify-center items-center w-32 bg-green-600 p-2 gap-2 rounded-full"
-					onClick={() => {}}
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						strokeWidth={1.5}
-						stroke="currentColor"
-						className="w-6 text-white"
-					>
-						<path
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-						/>
-						<path
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
-						/>
-					</svg>
-					<span className="text-white font-bold">
-						Tracer le chemin
-					</span>
-				</button>
-			)}
-
-			{nearestHospital && (
-				<button
-					className="flex flex-row justify-center items-center w-24 bg-red-600 p-2 gap-2 rounded-full"
-					onClick={() => {}}
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						strokeWidth={1.5}
-						stroke="currentColor"
-						className="w-6 h-6 text-white"
-					>
-						<path
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0M3.124 7.5A8.969 8.969 0 0 1 5.292 3m13.416 0a8.969 8.969 0 0 1 2.168 4.5"
-						/>
-					</svg>
-					<span className="text-white font-bold">Alerter</span>
-				</button>
-			)}
-
-			<button
-				onClick={zoomIn}
-				className="flex flex-col justify-center items-center w-full"
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					strokeWidth={1.5}
-					stroke="currentColor"
-					className="size-6"
-				>
-					<path
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						d="M12 4.5v15m7.5-7.5h-15"
-					/>
-				</svg>
-				<span className="text-white font-bold">Zoom In</span>
-			</button>
-			<button
-				onClick={zoomOut}
-				className="flex flex-col justify-center items-center w-full"
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					strokeWidth={1.5}
-					stroke="currentColor"
-					className="w-6 h-6 items-center"
-				>
-					<path
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						d="M5 12h14"
-					/>
-				</svg>
-				<span className="text-white font-bold">Zoom Out</span>
-			</button>
-		</div>
-	);
-};
-
 const MapComponent: React.FC = () => {
 	const [hospitals, setHospitals] = useState<Hospital[]>([]);
 	const [nearestHospital, setNearestHospital] = useState<Hospital>();
 
 	const { position } = useGeolocation();
-	const [mapPosition, setMapPosition] = useState<[number, number] | null>(
-		null
-	);
+	const [mapPosition, setMapPosition] = useState<
+		[number, number] | undefined
+	>();
 	const defaultCenter: [number, number] = [-1.6885276, 29.2322494];
 
 	const userMarkerRef = useRef<L.Marker>(null);
@@ -170,7 +55,7 @@ const MapComponent: React.FC = () => {
 		const fetchData = async () => {
 			try {
 				const [hospitalResponse] = await Promise.all([
-					axios.get(`${getMainUrlApi()}hospitals/hopital`),
+					axios.get(`${getMainUrlApi()}hospitals/hospital`),
 				]);
 
 				setHospitals(hospitalResponse.data);
@@ -300,6 +185,7 @@ const MapComponent: React.FC = () => {
 					)}
 					<CustomZoomControl
 						nearestHospital={nearestHospital ?? undefined}
+						positionUser={mapPosition}
 					/>
 				</MapContainer>
 			)}

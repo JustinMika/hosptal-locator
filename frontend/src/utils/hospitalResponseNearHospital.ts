@@ -2,7 +2,7 @@ import { Hospital } from "../types";
 import haversineDistance from "./haversineDistance";
 
 // Trouver l'hôpital le plus proche
-const nearest = (
+const hospitalResponseNearHospital = (
 	prev: Hospital,
 	curr: Hospital,
 	userPosition: [number, number]
@@ -19,4 +19,4 @@ const nearest = (
 	return prevDistance < currDistance ? prev : curr;
 };
 
-export default nearest;
+export default hospitalResponseNearHospital;

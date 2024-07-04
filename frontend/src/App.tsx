@@ -19,6 +19,7 @@ import UsersDashboard from "./users/pages/UsersDashboard.tsx";
 import UserProfile from "./users/pages/UserProfile.tsx";
 import Profil from "./admin/pages/Profil.tsx";
 import AddUser from "./admin/pages/AddUser.tsx";
+import LocatePatient from "./hospitals/pages/LocatePatient.tsx";
 
 const App = () => {
 	return (
@@ -100,6 +101,11 @@ const App = () => {
 				<Route
 					path="/hospital/dashboard/profil/"
 					element={<HospitalProfil />}
+					errorElement={<PageNotFound />}
+				/>
+				<Route
+					path="/hospital/dashboard/localisation-patient/:lat/:long/"
+					element={<LocatePatient />}
 					errorElement={<PageNotFound />}
 				/>
 				{/* END hospitals routes */}
