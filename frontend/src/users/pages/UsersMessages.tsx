@@ -9,6 +9,7 @@ import { RootState } from "../../store/store.ts";
 import { Messages, UserProps } from "../../types.ts";
 import { useSelector } from "react-redux";
 import { Avatar } from "flowbite-react";
+import saveVisite from "../../utils/saveVisiteSite.ts";
 
 const UsersMessages = () => {
 	window.document.title = "Message";
@@ -70,6 +71,12 @@ const UsersMessages = () => {
 				console.log(err);
 			});
 	};
+
+	useEffect(() => {
+		return () => {
+			saveVisite(window.document.title);
+		};
+	}, []);
 	return (
 		<>
 			<AsideDashboard />

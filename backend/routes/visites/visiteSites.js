@@ -4,9 +4,13 @@ const VisiteSite = require("../../models/VisiteSite");
 const { Sequelize } = require("sequelize");
 
 router.post("/", async (req, res) => {
-	const { userId } = req.body;
+	const { page } = req.body;
+
+	const data = {
+		page: page,
+	};
 	try {
-		const visite = await VisiteSite.create({ userId });
+		const visite = await VisiteSite.create(data);
 		res.json({ message: "Visit recorded successfully", visite });
 	} catch (error) {
 		res.status(500).json({ message: "Error recording visit", error });

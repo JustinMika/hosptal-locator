@@ -59,19 +59,19 @@ router.get("/visits-per-month", async (req, res) => {
 		const visitsByMonth = await Alerte.findAll({
 			attributes: [
 				[
-					Sequelize.fn("DATE_FORMAT", Sequelize.col("createdAt"), "%m"),
+					Sequelize.fn("DATE_FORMAT", Sequelize.col("created_at"), "%m"),
 					"month",
 				],
 				[Sequelize.fn("COUNT", Sequelize.col("id")), "count"],
 			],
-			group: [Sequelize.fn("DATE_FORMAT", Sequelize.col("createdAt"), "%m")],
-			order: Sequelize.fn("DATE_FORMAT", Sequelize.col("createdAt"), "%m"),
+			group: [Sequelize.fn("DATE_FORMAT", Sequelize.col("created_at"), "%m")],
+			order: Sequelize.fn("DATE_FORMAT", Sequelize.col("created_at"), "%m"),
 		});
 
 		res.status(200).json(visitsByMonth);
 	} catch (error) {
 		console.error("Error fetching visits per month:", error);
-		res.status(500).json({ error: "Internal server error" });
+		res.status(500).json({ error: "Internal server error :: "+error });
 	}
 });
 

@@ -3,11 +3,12 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ContentAdmin from "../components/ContentAdmin";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import getMainUrlApi from "../../utils/getMainUrlApi";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { updateUser } from "../../store/slice/authSlice";
+import saveVisite from "../../utils/saveVisiteSite";
 
 const HospitalProfil = () => {
 	axios.defaults.withCredentials = true;
@@ -16,13 +17,12 @@ const HospitalProfil = () => {
 		"Profil de l'utilisateur [Mise a jour des information de l'utilisateur...]"
 	);
 
-	window.document.title = "Profil";
+	window.document.title = "Profil de l'utilisateur";
 	axios.defaults.withCredentials = true;
 	localStorage.setItem("page", "profil utilisateur");
 	const dispatch = useDispatch();
 	const user = useSelector((state: RootState) => state.user);
 
-	window.document.title = "Profil utilisateur";
 	const [Email, setEmail] = useState<string | undefined>(user?.email);
 	const [Name, setName] = useState<string | undefined>(user?.pseudo);
 	const [Phone, setPhone] = useState<string | undefined>(user?.telephone);
@@ -146,6 +146,12 @@ const HospitalProfil = () => {
 			});
 		}
 	};
+
+	useEffect(() => {
+		return () => {
+			saveVisite(window.document.title);
+		};
+	}, []);
 	return (
 		<ContentAdmin>
 			<ToastContainer />

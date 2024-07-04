@@ -50,7 +50,8 @@ const Users: React.FC = () => {
 		axios
 			.delete(`${getMainUrlApi()}users/delete/${id}/`)
 			.then((data) => {
-				setUsers(data.data.data);
+				console.log(data);
+				toast.info("success");
 			})
 			.catch((err) => {
 				console.log(err);

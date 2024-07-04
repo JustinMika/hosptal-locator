@@ -31,7 +31,7 @@ const DashboardHospital = () => {
 						</div>
 						<div className="w-full h-auto p-4 bg-white rounded-lg shadow-md col-span-11">
 							<h2 className="text-xl font-semibold mb-4">
-								Cisites du site par mois
+								Visites du site par mois
 							</h2>
 							{/* graphique */}
 							<VisitsPerMonthChart />

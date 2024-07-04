@@ -5,8 +5,16 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "leaflet/dist/leaflet.css";
 import MapComponent from "../hooks/MapComponent";
+import saveVisite from "../../utils/saveVisiteSite";
+import { useEffect } from "react";
 
 const UsersDashboard: React.FC = () => {
+	window.document.title = "Users Dashboard";
+	useEffect(() => {
+		return () => {
+			saveVisite(window.document.title);
+		};
+	}, []);
 	return (
 		<>
 			<AsideDashboard />

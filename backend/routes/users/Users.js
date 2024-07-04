@@ -75,7 +75,6 @@ router.delete("delete/:id", async (req, res) => {
 	const { id } = req.params;
 	try {
 		const userDeleted = User.findByPk(id);
-		User.update();
 		userDeleted.delete();
 		res.status(201).json({ message: "utilisateur supprime.", userDeleted });
 	} catch (error) {

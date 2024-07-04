@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import ContentAdmin from "../components/ContentAdmin";
 import getMainUrlApi from "../../utils/getMainUrlApi.ts";
 import axios from "axios";
@@ -43,6 +43,7 @@ const ListHospital: React.FC = () => {
 			.delete(`${getMainUrlApi()}users/delete/${id}/`)
 			.then((data) => {
 				console.log(data);
+				toast.info("success");
 			})
 			.catch((err) => {
 				console.log(err);
@@ -193,17 +194,6 @@ const ListHospital: React.FC = () => {
 												}}
 											>
 												Supprimer
-											</button>
-
-											<button
-												className="rounded-md bg-green-500 hover:bg-green-700 text-white px-2 py-2 shadow"
-												onClick={() => {
-													deleteHospialList(
-														hospialLists.id
-													);
-												}}
-											>
-												Mettre a jour
 											</button>
 										</td>
 									</tr>

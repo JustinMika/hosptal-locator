@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import AsideDashboard from "../components/AsideDashboard";
 import ContentDashBoardUser from "../components/ContentDashBoardUser";
 import { toast, ToastContainer } from "react-toastify";
@@ -9,6 +9,7 @@ import { RootState } from "../../store/store";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { updateUser } from "../../store/slice/authSlice";
+import saveVisite from "../../utils/saveVisiteSite";
 // import { login, logout, updateUser } from "../../store/slice/authSlice";
 
 const UserProfile: React.FC = () => {
@@ -141,7 +142,11 @@ const UserProfile: React.FC = () => {
 			});
 		}
 	};
-
+	useEffect(() => {
+		return () => {
+			saveVisite(window.document.title);
+		};
+	}, []);
 	return (
 		<React.Fragment>
 			<AsideDashboard />

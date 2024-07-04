@@ -14,6 +14,7 @@ import {
 } from "react-leaflet";
 import { RootState } from "../../store/store";
 import { useSelector } from "react-redux";
+import saveVisite from "../../utils/saveVisiteSite";
 
 const hospitalIcon = new L.Icon({
 	iconUrl: "/images/hopitalIcon.png",
@@ -93,6 +94,12 @@ const LocatePatient: React.FC = () => {
 			}
 		}
 	}, [lat, long, user?.latitude, user?.longitude]);
+
+	useEffect(() => {
+		return () => {
+			saveVisite(window.document.title);
+		};
+	}, []);
 
 	return (
 		<ContentAdmin>

@@ -17,7 +17,7 @@ const AlertMois: React.FC = () => {
 		const fetchData = async () => {
 			try {
 				const response = await axios.get<VisitData[]>(
-					`${getMainUrlApi()}visite-site/visits-per-month`
+					`${getMainUrlApi()}alerts/visits-per-month`
 				);
 				setData(response.data);
 			} catch (error) {

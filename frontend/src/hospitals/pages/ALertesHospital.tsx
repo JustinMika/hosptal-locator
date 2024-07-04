@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+import saveVisite from "../../utils/saveVisiteSite";
 
 interface User {
 	id?: number;
@@ -87,6 +88,17 @@ const ALertesHospital: React.FC = () => {
 		const url = `/hospital/dashboard/localisation-patient/${lat}/${long}`;
 		navigate(url);
 	};
+
+	useEffect(() => {
+		return () => {
+			saveVisite(window.document.title);
+		};
+	}, []);
+
+	useEffect(() => {
+		// Exécuter saveVisite uniquement lorsque le composant est monté
+		saveVisite(window.document.title);
+	}, []); // Dépendances vides, exécute seulement lors du montage
 	return (
 		<ContentAdmin>
 			<ToastContainer />
