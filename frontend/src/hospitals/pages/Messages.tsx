@@ -7,6 +7,7 @@ import { Avatar } from "flowbite-react";
 import { RootState } from "../../store/store";
 import { useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
+import saveVisite from "../../utils/saveVisiteSite";
 
 const Messages = () => {
 	// user list
@@ -14,6 +15,7 @@ const Messages = () => {
 	axios.defaults.withCredentials = true;
 	localStorage.setItem("page", "Messagerie");
 	const user = useSelector((state: RootState) => state.user);
+	window.document.title = "Messagerie";
 
 	const [messages, setMessages] = useState<Array<MessagesModel>>([]);
 	const [selectUser, setselectUser] = useState<number | null | undefined>(
@@ -67,6 +69,12 @@ const Messages = () => {
 				console.log(err);
 			});
 	};
+
+	useEffect(() => {
+		return () => {
+			saveVisite(window.document.title);
+		};
+	}, []);
 
 	return (
 		<ContentAdmin>

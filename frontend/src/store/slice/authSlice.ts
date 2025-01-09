@@ -10,6 +10,7 @@ interface User {
 	userType?: string;
 	createdAt?: Date;
 	updatedAt?: Date;
+	telephone?: string;
 }
 
 interface AuthState {
@@ -37,9 +38,14 @@ const authSlice = createSlice({
 			state.user = null;
 			state.token = null;
 		},
+		updateUser: (state, action: PayloadAction<User>) => {
+			if (state.user) {
+				state.user = { ...state.user, ...action.payload };
+			}
+		},
 	},
 });
 
-export const { login, logout } = authSlice.actions;
+export const { login, logout, updateUser } = authSlice.actions;
 
 export const authReducer = authSlice.reducer;

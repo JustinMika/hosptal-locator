@@ -18,6 +18,10 @@ const Utilisateur = sequelize.define(
 			type: DataTypes.STRING,
 			allowNull: false,
 		},
+		telephone: {
+			type: DataTypes.STRING,
+			allowNull: true,
+		},
 		password: {
 			type: DataTypes.STRING,
 			allowNull: false,

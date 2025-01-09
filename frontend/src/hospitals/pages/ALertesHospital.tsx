@@ -1,36 +1,99 @@
 import React, { useEffect, useState } from "react";
 import ContentAdmin from "../components/ContentAdmin";
 import axios from "axios";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import getMainUrlApi from "../../utils/getMainUrlApi";
-import { Alerte } from "../../types";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
+import moment from "moment";
+import { useNavigate } from "react-router-dom";
+import saveVisite from "../../utils/saveVisiteSite";
+
+interface User {
+	id?: number;
+	pseudo?: string;
+	email?: string;
+	telephone?: string;
+	password?: string;
+	latitude?: string | null;
+	longitude?: string | null;
+	userType?: string;
+	createdAt?: string;
+	updatedAt?: string;
+}
+
+interface Alerte {
+	id?: number;
+	userId?: number;
+	userIdHostpital?: number;
+	message?: string;
+	status: "pending" | "finish" | "unknown" | "pendung";
+	latitude?: string;
+	longitude?: string;
+	createdAt?: string;
+	updatedAt?: string;
+	user?: User;
+}
 
 const ALertesHospital: React.FC = () => {
 	axios.defaults.withCredentials = true;
 	localStorage.setItem("page", "Alerte des utilisateurs");
 	window.document.title = "Alerte des utilisateurs";
+	const user = useSelector((state: RootState) => state.user);
 
-	const [alert, setalert] = useState<Array<Alerte>>([]);
+	const [alert, setAlerts] = useState<Array<Alerte>>([]);
 	const [searchQuery, setSearchQuery] = useState<string>("");
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [alertPerPage] = useState<number>(5);
 
 	useEffect(() => {
-		axios
-			.get(`${getMainUrlApi()}alert/`)
-			.then((data) => {
-				console.log(data.data);
-				setalert(data.data);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	}, []);
+		// Création de l'élément audio
+		const audioElement = document.createElement("audio");
+		audioElement.id = "musicplayer";
+		audioElement.autoplay = true;
+		const getData = async () => {
+			try {
+				const response = await axios.get(
+					`${getMainUrlApi()}alerts/all-my-alertes/${user?.id}`
+				);
+				if (alert.length >= 1 && response.data.length > alert.length) {
+					toast.info("Une nouvelle alerte.");
+
+					// Création de l'élément source
+					const sourceElement = document.createElement("source");
+					// /sounds/sirenAalert.wav
+					sourceElement.src = "/sounds/sirenAalert.wav";
+					audioElement.appendChild(sourceElement);
+
+					audioElement.addEventListener("ended", () => {
+						document.body.removeChild(audioElement);
+					});
+
+					// Ajout de l'élément audio à la fin du body
+					// document.body.appendChild(audioElement);
+				}
+				setAlerts(response.data);
+			} catch (error) {
+				console.log(error);
+			}
+		};
+
+		const interval = setInterval(() => {
+			if (user?.id) {
+				getData();
+			}
+		}, 1000); // 1000 ms = 1 seconde
+
+		return () => clearInterval(interval);
+		// Nettoyage de l'intervalle lors du démontage
+	}, [alert.length, user?.id]);
 
 	// Filtrer les utilisateurs en fonction de la recherche
 	const filteredalert = alert?.filter(
 		(user) =>
-			user?.pseudo?.toLowerCase().includes(searchQuery?.toLowerCase()) ||
+			user?.user?.pseudo
+				?.toLowerCase()
+				.includes(searchQuery?.toLowerCase()) ||
 			user?.message?.toLowerCase().includes(searchQuery?.toLowerCase())
 	);
 
@@ -41,6 +104,28 @@ const ALertesHospital: React.FC = () => {
 
 	// Changer de page
 	const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+	const navigate = useNavigate();
+
+	const localiserPatient = (
+		lat: number | string | undefined,
+		long: number | string | undefined
+	) => {
+		console.log(lat, long);
+		const url = `/hospital/dashboard/localisation-patient/${lat}/${long}`;
+		navigate(url);
+	};
+
+	useEffect(() => {
+		return () => {
+			saveVisite(window.document.title);
+		};
+	}, []);
+
+	useEffect(() => {
+		// Exécuter saveVisite uniquement lorsque le composant est monté
+		saveVisite(window.document.title);
+	}, []); // Dépendances vides, exécute seulement lors du montage
 	return (
 		<ContentAdmin>
 			<ToastContainer />
@@ -74,7 +159,6 @@ const ALertesHospital: React.FC = () => {
 					</div>
 				</div>
 
-				{/*  */}
 				<div className="flex flex-col px-0">
 					<div className="overflow-x-auto px-2">
 						<div className="inline-block min-w-full align-middle">
@@ -83,7 +167,7 @@ const ALertesHospital: React.FC = () => {
 									<thead className="bg-gray-100 dark:bg-gray-700">
 										<tr>
 											<th className="p-4 text-xs font-medium text-left text-gray-500 text-wrap uppercase dark:text-gray-400">
-												Pseudo|Nom
+												Noms du patient
 											</th>
 											<th className="p-4 text-xs font-medium text-left text-gray-500 text-wrap uppercase dark:text-gray-400">
 												Message
@@ -94,6 +178,12 @@ const ALertesHospital: React.FC = () => {
 											<th className="p-4 text-xs font-medium text-left text-gray-500 text-wrap uppercase dark:text-gray-400">
 												Date de création
 											</th>
+											<th className="p-4 text-xs font-medium text-left text-gray-500 text-wrap uppercase dark:text-gray-400">
+												Temps
+											</th>
+											<th className="p-4 text-xs font-medium text-left text-gray-500 text-wrap uppercase dark:text-gray-400">
+												<a href="#">#Action</a>
+											</th>
 										</tr>
 									</thead>
 									<tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
@@ -103,21 +193,111 @@ const ALertesHospital: React.FC = () => {
 												className="hover:bg-gray-50 dark:hover:bg-gray-700 py-2"
 											>
 												<td className="flex items-center p-4 mr-12 space-x-6 whitespace-nowrap">
-													{user?.pseudo}
+													{user?.user?.pseudo}
 												</td>
 												<td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
 													{user?.message}
 												</td>
 												<td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
-													{`-`}
-												</td>
-												<td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
-													{user?.STATUS}
+													{user?.status ===
+														"pending" ??
+														"En attente"}
+													{user?.status === "pendung"
+														? "En attente"
+														: "Terminer"}
 												</td>
 												<td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
 													{new Date(
-														user.createdAt
+														user?.createdAt ??
+															new Date()
 													).toLocaleString()}
+												</td>
+												<td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
+													{moment(
+														user?.createdAt
+													).fromNow()}
+												</td>
+												<td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white flex justify-center items-center gap-2">
+													{user?.status ===
+													"pending" ? (
+														<button
+															className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 duration-200 w-fit flex items-baseline"
+															title="Marquer comme terminer."
+															onClick={() => {}}
+															disabled={true}
+														>
+															<svg
+																xmlns="http://www.w3.org/2000/svg"
+																fill="none"
+																viewBox="0 0 24 24"
+																strokeWidth={
+																	1.5
+																}
+																stroke="currentColor"
+																className="size-6"
+															>
+																<path
+																	strokeLinecap="round"
+																	strokeLinejoin="round"
+																	d="m4.5 12.75 6 6 9-13.5"
+																/>
+															</svg>
+														</button>
+													) : (
+														<button
+															className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 duration-200 w-fit flex items-baseline"
+															title="Marquer comme terminer."
+														>
+															<svg
+																xmlns="http://www.w3.org/2000/svg"
+																fill="none"
+																viewBox="0 0 24 24"
+																strokeWidth={
+																	1.5
+																}
+																stroke="currentColor"
+																className="size-6"
+															>
+																<path
+																	strokeLinecap="round"
+																	strokeLinejoin="round"
+																	d="m4.5 12.75 6 6 9-13.5"
+																/>
+															</svg>
+														</button>
+													)}
+
+													<button
+														className="px-4 py-2 bg-green-400 text-white rounded-md hover:bg-green-700 duration-200 w-fit flex justify-center items-center"
+														title="Localiser le patient"
+														onClick={() => {
+															localiserPatient(
+																user.latitude,
+																user?.longitude
+															);
+														}}
+													>
+														<svg
+															xmlns="http://www.w3.org/2000/svg"
+															fill="none"
+															viewBox="0 0 24 24"
+															strokeWidth={1.5}
+															stroke="currentColor"
+															className="size-6"
+														>
+															<path
+																strokeLinecap="round"
+																strokeLinejoin="round"
+																d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+															/>
+															<path
+																strokeLinecap="round"
+																strokeLinejoin="round"
+																d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
+															/>
+														</svg>
+														<span>Localiser</span>
+													</button>
 												</td>
 											</tr>
 										))}
@@ -162,6 +342,9 @@ const ALertesHospital: React.FC = () => {
 				</div>
 				{/*  */}
 			</main>
+			<audio id="musicplayer" autoPlay>
+				<source src="/sounds/sirenAalert.wav" />
+			</audio>
 		</ContentAdmin>
 	);
 };

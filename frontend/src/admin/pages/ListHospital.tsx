@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import ContentAdmin from "../components/ContentAdmin";
 import getMainUrlApi from "../../utils/getMainUrlApi.ts";
 import axios from "axios";
@@ -8,14 +8,17 @@ import { UserProps } from "../../types.ts";
 const ListHospital: React.FC = () => {
 	window.document.title = "Liste des clients";
 	axios.defaults.withCredentials = true;
-	localStorage.setItem("page", "Liste des clients");
+	localStorage.setItem(
+		"page",
+		"Liste des hopitaux deja enregistre dans la base doonnees."
+	);
 	const [hospialList, sethospialList] = useState<UserProps[]>([]);
 
 	const [searchTerm, setSearchTerm] = useState("");
 	const [filteredUsers, setFilteredUsers] = useState<Array<UserProps>>([]);
 
 	const [currentPage, setCurrentPage] = useState(1);
-	const [usersPerPage, setusersPerPage] = useState<number>(5);
+	const [usersPerPage, setusersPerPage] = useState<number>(10);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -32,6 +35,20 @@ const ListHospital: React.FC = () => {
 
 		fetchData();
 	}, []);
+
+	const deleteHospialList = (id: number | undefined | null) => {
+		const updatedUsers = hospialList.filter((user) => user?.id !== id);
+		sethospialList(updatedUsers);
+		axios
+			.delete(`${getMainUrlApi()}users/delete/${id}/`)
+			.then((data) => {
+				console.log(data);
+				toast.info("success");
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
 
 	const handleSearch = () => {
 		const filtered = hospialList.filter(
@@ -108,7 +125,7 @@ const ListHospital: React.FC = () => {
 							name="perpage"
 							id="perpage"
 							className="p-2 border border-gray-300 rounded-r"
-							onChange={() => setusersPerPage(0)}
+							onChange={() => setusersPerPage(1)}
 						>
 							<option value={5}>5</option>
 							<option value={10}>10</option>
@@ -119,7 +136,8 @@ const ListHospital: React.FC = () => {
 					{currentUsers && (
 						<table className="w-full border-collapse shadow-md">
 							<thead>
-								<tr className="bg-gray-100">
+								<tr className="bg-gray-100 text-left uppercase">
+									<th className="py-2 px-4 border">#ID</th>
 									<th className="py-2 px-4 border">
 										Nom de l'hopital
 									</th>
@@ -130,6 +148,12 @@ const ListHospital: React.FC = () => {
 									<th className="py-2 px-4 border">
 										Longitude
 									</th>
+									<th className="py-2 px-4 border">
+										Date de création
+									</th>
+									<th className="py-2 px-4 border">
+										#Action
+									</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -138,6 +162,9 @@ const ListHospital: React.FC = () => {
 										key={hospialLists?.id}
 										className="hover:bg-gray-100 transition-colors"
 									>
+										<td className="py-2 px-4 border">
+											{hospialLists?.id}
+										</td>
 										<td className="py-2 px-4 border">
 											{hospialLists?.pseudo}
 										</td>
@@ -149,8 +176,25 @@ const ListHospital: React.FC = () => {
 											{hospialLists.latitude ?? "-"}
 										</td>
 
-										<td className="py-2 px-4 border flex justify-between items-center gap-2">
+										<td className="py-2 px-4 border">
 											{hospialLists.longitude ?? "-"}
+										</td>
+										<td className="py-2 px-4 border p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
+											{new Date(
+												hospialLists.createdAt
+											).toLocaleString()}
+										</td>
+										<td className="py-2 px-4 border flex flex-row gap-4">
+											<button
+												className="rounded-md bg-red-500 hover:bg-red-700 text-white px-2 py-2 shadow"
+												onClick={() => {
+													deleteHospialList(
+														hospialLists.id
+													);
+												}}
+											>
+												Supprimer
+											</button>
 										</td>
 									</tr>
 								))}

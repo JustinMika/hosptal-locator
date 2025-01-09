@@ -34,34 +34,37 @@ app.use("/uploads", express.static(uploadsDirectory));
 
 app.use(express.urlencoded({ extended: true }));
 
-// Spécifier les origines autorisées
-const allowedOrigins = ["http://localhost:5173"];
+const corsOptions = {
+	origin: [
+		"https://localhost:5173",
+		"http://localhost:5173",
+		"https://miciiivix:5173",
+		"https://miciiivix:5173",
+		"https://192.168.1.100:5173",
+		"http://192.168.1.100:5173",
+		"https://192.168.1.101:5173",
+		"http://192.168.1.101:5173",
+		"https://192.168.1.100:5173",
+	], // Permettre l'accès depuis n'importe quel domaine
+	methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+	allowedHeaders: "Origin,X-Requested-With,Content-Type,Accept,Authorization",
+};
 
 app.use(
 	cors({
-		origin: function (origin, callback) {
-			if (allowedOrigins.includes(origin) || !origin) {
-				callback(null, true);
-			} else {
-				console.log("Accès non autorisé par CORS");
-			}
-		},
-		allowedHeaders: ["Authorization", "Content-Type"],
-		exposedHeaders: ["X-Custom-Header"],
-		methods: ["POST", "GET", "OPTIONS", "PUT", "DELETE"],
+		origin: corsOptions,
 		credentials: true,
 	})
 );
 
-// ============ les routes =============================
+// ============================== les routes =============================
 app.get("/", async (req, res) => {
-	// Utiliser useragent pour obtenir le nom du navigateur
 	const userAgentString = req.headers["user-agent"];
 	let browserName = userAgentString;
 
 	try {
 		const userAgent = useragent.lookup(userAgentString);
-		browserName = userAgent.family; // Obtenir le nom du navigateur
+		browserName = userAgent.family;
 		res.status(200).json({
 			message: "API from Hospital Location",
 			ip: req.ip,
@@ -80,5 +83,6 @@ app.use("/api/v1/hospitals/", require("./routes/hospitals/Hospitals"));
 app.use("/api/v1/visite-site/", require("./routes/visites/visiteSites"));
 app.use("/api/v1/admin/", require("./routes/admin/Admin"));
 app.use("/api/v1/messages/", require("./routes/messages/message"));
+app.use("/api/v1/alerts/", require("./routes/alertes/alertes"));
 
 module.exports = app;

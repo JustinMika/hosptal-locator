@@ -1,7 +1,6 @@
 // visite_sites.js
-const { DataTypes, Sequelize } = require("sequelize");
+const { DataTypes } = require("sequelize");
 const sequelize = require("../config/databases");
-const Utilisateur = require("./Utilisateur");
 
 const VisiteSite = sequelize.define(
 	"visite_sites",
@@ -11,33 +10,20 @@ const VisiteSite = sequelize.define(
 			primaryKey: true,
 			autoIncrement: true,
 		},
-		userId: {
-			type: DataTypes.INTEGER,
+		page: {
+			type: DataTypes.STRING,
 			allowNull: false,
-			references: {
-				model: Utilisateur,
-				key: "id",
-			},
-		},
-		visitedAt: {
-			type: DataTypes.DATE,
-			allowNull: true,
 		},
 		createdAt: {
 			type: DataTypes.DATE,
-			defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
-		},
-		updatedAt: {
-			type: DataTypes.DATE,
-			defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
+			defaultValue: DataTypes.NOW,
+			field: "createdAt", // Assurez-vous que le nom du champ correspond à votre base de données
 		},
 	},
 	{
-		timestamps: true,
-		underscored: true,
-		tableName: "visite_sites",
+		tableName: "visite_sites", // Assurez-vous que le nom de la table correspond à votre base de données
+		timestamps: false, // Si vous ne souhaitez pas utiliser les timestamps
 	}
 );
 
-VisiteSite.belongsTo(Utilisateur, { foreignKey: "userId" });
 module.exports = VisiteSite;

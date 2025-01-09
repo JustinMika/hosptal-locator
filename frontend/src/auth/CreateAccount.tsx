@@ -8,10 +8,12 @@ import * as Yup from "yup";
 import { useState } from "react";
 import getMainUrlApi from "../utils/getMainUrlApi.ts";
 import { initialFormDataUser } from "../types";
+import { login } from "../store/slice/authSlice.ts";
+import { useDispatch } from "react-redux";
 
 const CreateAccount = () => {
 	window.document.title = "Creation du compte";
-
+	const dispatch = useDispatch();
 	const validationSchemaForm = Yup.object().shape({
 		name: Yup.string()
 			.matches(/^[a-zA-Z\s]+$/, "Le nom ne doit contenir que des lettres")
@@ -51,10 +53,10 @@ const CreateAccount = () => {
 		axios
 			.post(`${getMainUrlApi()}auth/register`, values)
 			.then((response) => {
-				// console.log(response?.data?.userType);
-				const { token, userType } = response.data;
+				const { user, token, userType } = response.data;
 
-				if (token && userType) {
+				if (user && token && userType) {
+					dispatch(login({ user, token }));
 					setIsLeading2(false);
 					axios.defaults.headers.common[
 						"Authorization"
@@ -105,16 +107,19 @@ const CreateAccount = () => {
 				}
 			})
 			.catch((error) => {
-				toast.error(`Erreur: ${error?.response?.data?.message};`, {
-					position: "bottom-right",
-					autoClose: 10000,
-					hideProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true,
-					draggable: false,
-					progress: 1,
-					theme: "colored",
-				});
+				toast.error(
+					`Erreur: ${error?.response?.data?.message ?? error};`,
+					{
+						position: "bottom-right",
+						autoClose: 10000,
+						hideProgressBar: false,
+						closeOnClick: true,
+						pauseOnHover: true,
+						draggable: false,
+						progress: 1,
+						theme: "colored",
+					}
+				);
 				setIsLeading2(false);
 			});
 	};
@@ -138,13 +143,13 @@ const CreateAccount = () => {
 								className="text-left block text-[#039875] text-sm font-bold mb-2"
 								htmlFor="name"
 							>
-								Pseudo
+								Noms
 							</label>
 							<Field
 								className={`shadow appearance-none border  rounded w-full py-2 px-3 text-gray-600 leading-tight focus:outline-none focus:shadow-outline  focus:ring-1`}
 								id="name"
 								type="text"
-								placeholder="Votre pseudo"
+								placeholder="Votre noms"
 								name="name"
 							/>
 							<ErrorMessage

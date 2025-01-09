@@ -9,6 +9,7 @@ import { RootState } from "../../store/store.ts";
 import { Messages, UserProps } from "../../types.ts";
 import { useSelector } from "react-redux";
 import { Avatar } from "flowbite-react";
+import saveVisite from "../../utils/saveVisiteSite.ts";
 
 const UsersMessages = () => {
 	window.document.title = "Message";
@@ -27,7 +28,7 @@ const UsersMessages = () => {
 	// recuperationdes utilisateurs clients
 	useEffect(() => {
 		axios
-			.get(`${getMainUrlApi()}users/hopital`)
+			.get(`${getMainUrlApi()}users/hospital`)
 			.then((data) => {
 				setUsers(data.data);
 			})
@@ -70,6 +71,12 @@ const UsersMessages = () => {
 				console.log(err);
 			});
 	};
+
+	useEffect(() => {
+		return () => {
+			saveVisite(window.document.title);
+		};
+	}, []);
 	return (
 		<>
 			<AsideDashboard />
@@ -164,7 +171,7 @@ const UsersMessages = () => {
 								{/* Messages */}
 								<div
 									className={`${
-										!selectUser
+										!selectUser || undefined || null || []
 											? "w-full col-span-12 sm:hidden lg:block md:block"
 											: "w-full col-span-12"
 									} lg:col-span-2 lg:block`}
@@ -174,7 +181,7 @@ const UsersMessages = () => {
 											<div className="relative flex items-center justify-start">
 												<Avatar rounded />
 												<span className="block ml-2 font-bold text-gray-600">
-													{`${user?.pseudo} <${user?.email}>`}
+													{`${user?.pseudo}`}
 												</span>
 												<span className="absolute w-3 h-3 bg-green-600 rounded-full left-10 -top-1"></span>
 											</div>
@@ -184,7 +191,20 @@ const UsersMessages = () => {
 													setselectUser(null);
 												}}
 											>
-												Retour
+												<svg
+													xmlns="http://www.w3.org/2000/svg"
+													fill="none"
+													viewBox="0 0 24 24"
+													strokeWidth={1.5}
+													stroke="currentColor"
+													className="size-6"
+												>
+													<path
+														strokeLinecap="round"
+														strokeLinejoin="round"
+														d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"
+													/>
+												</svg>
 											</button>
 										</div>
 										{/* messages */}
@@ -208,9 +228,6 @@ const UsersMessages = () => {
 																	}
 																</span>
 															</div>
-															{/* <span className="italic">
-															{new Date(messages.sentAt).toLocaleString()}
-														</span> */}
 														</li>
 													))}
 											</ul>

@@ -1,4 +1,3 @@
-// alertes.js
 const { DataTypes, Sequelize } = require("sequelize");
 const sequelize = require("../config/databases");
 const Utilisateur = require("./Utilisateur");
@@ -19,11 +18,28 @@ const Alerte = sequelize.define(
 				key: "id",
 			},
 		},
+		userIdHostpital: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+			references: {
+				model: Utilisateur,
+				key: "id",
+			},
+		},
 		message: {
 			type: DataTypes.TEXT,
 			allowNull: true,
 		},
 		status: {
+			type: DataTypes.ENUM("pending", "finish", "unknow"),
+			allowNull: false,
+			field: "status",
+		},
+		latitude: {
+			type: DataTypes.STRING,
+			allowNull: true,
+		},
+		longitude: {
 			type: DataTypes.STRING,
 			allowNull: true,
 		},
@@ -43,5 +59,6 @@ const Alerte = sequelize.define(
 	}
 );
 
-Alerte.belongsTo(Utilisateur, { foreignKey: "userId" });
+Alerte.belongsTo(Utilisateur, { foreignKey: "userId", as: "user" });
+Alerte.belongsTo(Utilisateur, { foreignKey: "userIdHostpital" });
 module.exports = Alerte;

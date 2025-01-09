@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "howler": "^2.2.4",
+    "react-sound": "^1.2.0"
+  },
+  "devDependencies": {
+    "@types/howler": "^2.2.11",
+    "@types/react-sound": "^1.2.6"
+  }
+}

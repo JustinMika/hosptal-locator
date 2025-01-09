@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import AsideDashboard from "../components/AsideDashboard";
 import ContentDashBoardUser from "../components/ContentDashBoardUser";
 import { toast, ToastContainer } from "react-toastify";
@@ -6,71 +6,49 @@ import axios from "axios";
 import getMainUrlApi from "../../utils/getMainUrlApi";
 import Header from "../components/Header";
 import { RootState } from "../../store/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { updateUser } from "../../store/slice/authSlice";
+import saveVisite from "../../utils/saveVisiteSite";
+// import { login, logout, updateUser } from "../../store/slice/authSlice";
 
 const UserProfile: React.FC = () => {
 	axios.defaults.withCredentials = true;
 	localStorage.setItem("page", "profil utilisateur");
-
+	const dispatch = useDispatch();
 	const user = useSelector((state: RootState) => state.user);
 
 	window.document.title = "Profil utilisateur";
 	const [Email, setEmail] = useState<string | undefined>(user?.email);
 	const [Name, setName] = useState<string | undefined>(user?.pseudo);
-	const [Phone, setPhone] = useState<string>("+243 000 000 000");
+	const [Phone, setPhone] = useState<string | undefined>(user?.telephone);
 	axios.defaults.withCredentials = true;
 
+	const [old, setOld] = useState<string>("");
 	const [pwd, setPwd] = useState<string>("");
 	const [pwd2, setPwd2] = useState<string>("");
 
-	const handleSubmit = (e: FormEvent) => {
+	// update user informations
+	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
-		const data = {
-			name: Name,
-			email: Email,
-			numero: Phone,
-		};
-		axios
-			.put(`${getMainUrlApi()}/update-user-infos/`, data)
-			.then((data) => {
-				toast.info(`${data.data.message}🫡`, {
-					position: "top-right",
-					autoClose: 2000,
-					hideProgressBar: false,
-					closeOnClick: false,
-					pauseOnHover: true,
-					draggable: true,
-					progress: undefined,
-					theme: "light",
-				});
-				window.location.reload();
-			})
-			.catch((err) => {
-				toast.error(`Erreur : ${err?.response?.data?.message}🫡`, {
-					position: "top-right",
-					autoClose: 2000,
-					hideProgressBar: false,
-					closeOnClick: false,
-					pauseOnHover: true,
-					draggable: true,
-					progress: undefined,
-					theme: "light",
-				});
-			});
-	};
-
-	// update le  mot de passe
-	const handleChangePasswordSubmit = (e: FormEvent) => {
-		e.preventDefault();
-		const data = {
-			pwd: pwd,
-			pwd2: pwd2,
-		};
-		if (pwd == pwd2) {
-			axios
-				.put(`${getMainUrlApi()}/update-user-infos-password/`, data)
+		if (Name && Email && Phone) {
+			const data = {
+				name: Name,
+				email: Email,
+				numero: Phone,
+			};
+			await axios
+				.put(
+					`${getMainUrlApi()}users/user/update-user-infos/${
+						user?.id
+					}/`,
+					data
+				)
 				.then((data) => {
-					toast.info(`${data.data.message}🫡`, {
+					const { user } = data.data;
+
+					dispatch(updateUser(user));
+					toast.info(`${data.data.message ?? "Success."}🫡`, {
 						position: "top-right",
 						autoClose: 2000,
 						hideProgressBar: false,
@@ -83,7 +61,7 @@ const UserProfile: React.FC = () => {
 					window.location.reload();
 				})
 				.catch((err) => {
-					toast.error(`Erreur : ${err?.response?.data?.message}🫡`, {
+					toast.error(`Erreur : ${err?.message}🫡`, {
 						position: "top-right",
 						autoClose: 2000,
 						hideProgressBar: false,
@@ -95,7 +73,64 @@ const UserProfile: React.FC = () => {
 					});
 				});
 		} else {
-			toast.error(`le s deux mot de passent ne correspodent pas.`, {
+			toast.error(`❌ Veuillez remplir tous les champs.`, {
+				position: "top-right",
+				autoClose: 2000,
+				hideProgressBar: false,
+				closeOnClick: false,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+				theme: "light",
+			});
+		}
+	};
+
+	// update le  mot de passe
+	const handleChangePasswordSubmit = (e: FormEvent) => {
+		e.preventDefault();
+		const data = {
+			old: old,
+			pwd: pwd,
+			pwd2: pwd2,
+		};
+		if (pwd == pwd2) {
+			axios
+				.put(
+					`${getMainUrlApi()}users/user/update-user-password/${
+						user?.id
+					}/`,
+					data
+				)
+				.then((data) => {
+					toast.info(`${data.data.message}🫡`, {
+						position: "top-right",
+						autoClose: 2000,
+						hideProgressBar: false,
+						closeOnClick: false,
+						pauseOnHover: true,
+						draggable: true,
+						progress: undefined,
+						theme: "colored",
+					});
+					setOld("");
+					setPwd("");
+					setPwd2("");
+				})
+				.catch((err) => {
+					toast.error(`Erreur : ${err?.response?.data?.message}🫡`, {
+						position: "top-right",
+						autoClose: 2000,
+						hideProgressBar: false,
+						closeOnClick: false,
+						pauseOnHover: true,
+						draggable: true,
+						progress: undefined,
+						theme: "colored",
+					});
+				});
+		} else {
+			toast.error(`les deux mot de passent ne correspodent pas.`, {
 				position: "top-center",
 				autoClose: 9000,
 				hideProgressBar: false,
@@ -107,12 +142,64 @@ const UserProfile: React.FC = () => {
 			});
 		}
 	};
+	useEffect(() => {
+		return () => {
+			saveVisite(window.document.title);
+		};
+	}, []);
 	return (
 		<React.Fragment>
 			<AsideDashboard />
 			<ContentDashBoardUser>
 				<ToastContainer />
 				<Header />
+				<div className="flex justify-between flex-nowrap mb-8 px-4 pb-4 border-1 border-b shadow-transparent ">
+					<nav className="flex" aria-label="Breadcrumb">
+						<ol className="inline-flex items-center space-x-1 md:space-x-3">
+							<li className="inline-flex items-center">
+								<Link
+									to={`/users/dashboard/`}
+									className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white"
+								>
+									<svg
+										className="w-3 h-3 mr-2.5"
+										aria-hidden="true"
+										xmlns="http://www.w3.org/2000/svg"
+										fill="currentColor"
+										viewBox="0 0 20 20"
+									>
+										<path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
+									</svg>
+									Page d'accueil
+								</Link>
+							</li>
+							<li aria-current="page">
+								<div className="flex items-center">
+									<svg
+										className="w-3 h-3 text-gray-400 mx-1"
+										aria-hidden="true"
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										viewBox="0 0 6 10"
+									>
+										<path
+											stroke="currentColor"
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											strokeWidth="2"
+											d="m1 9 4-4-4-4"
+										/>
+									</svg>
+									<span className="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">
+										Mise a jour des information de
+										l'utilisateur
+									</span>
+								</div>
+							</li>
+						</ol>
+					</nav>
+				</div>
+
 				<div className="grid md:grid-cols-2 sm:grid-cols-1 gap-8 px-4">
 					{/* informations */}
 					<div className="p-2">
@@ -271,47 +358,76 @@ const UserProfile: React.FC = () => {
 									action="#"
 									onSubmit={handleChangePasswordSubmit}
 								>
-									<div className="mb-3 flex flex-col gap-5 sm:flex-row">
-										<div className="w-full sm:w-1/2">
+									<div className="mb-3 ">
+										<div className="mb-3">
 											<label
 												className="mb-3 block text-sm font-medium text-black dark:text-white"
-												htmlFor="fullName"
+												htmlFor="oldPassWord"
 											>
-												Mot de passe
+												Ancien mot de passe
 											</label>
 											<div className="relative">
 												<input
-													className="w-full rounded border border-stroke bg-gray py-1 px-2 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:text-white dark:focus:border-primary"
+													className="w-full rounded border border-stroke bg-gray py-1 pl-2 pr-4 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
 													type="password"
-													name="pwd"
-													id="pwd"
-													placeholder="Mot de passe"
-													value={pwd}
+													name="oldPassWord"
+													id="oldPassWord"
+													placeholder={`Ancien mot de password`}
+													value={old ?? "-"}
 													onChange={(e) => {
-														setPwd(e.target.value);
+														setOld(e.target.value);
 													}}
+													required
 												/>
 											</div>
 										</div>
 
-										<div className="w-full sm:w-1/2">
-											<label
-												className="mb-3 block text-sm font-medium text-black dark:text-white"
-												htmlFor="pwd2"
-											>
-												confirmer le mot de passe
-											</label>
-											<input
-												className="w-full rounded border border-stroke bg-gray py-1 px-2 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-												type="password"
-												name="pwd2"
-												id="pwd2"
-												placeholder="confirmer le mot de passe"
-												value={pwd2}
-												onChange={(e) => {
-													setPwd2(e.target.value);
-												}}
-											/>
+										<div className="flex flex-col gap-5 sm:flex-row">
+											<div className="w-full sm:w-1/2">
+												<label
+													className="mb-3 block text-sm font-medium text-black dark:text-white"
+													htmlFor="fullName"
+												>
+													Mot de passe
+												</label>
+												<div className="relative">
+													<input
+														className="w-full rounded border border-stroke bg-gray py-1 px-2 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:text-white dark:focus:border-primary"
+														type="password"
+														name="pwd"
+														id="pwd"
+														placeholder="Nouveau mot de passe"
+														value={pwd}
+														onChange={(e) => {
+															setPwd(
+																e.target.value
+															);
+														}}
+														required
+													/>
+												</div>
+											</div>
+
+											<div className="w-full sm:w-1/2">
+												<label
+													className="mb-3 block text-sm font-medium text-black dark:text-white"
+													htmlFor="pwd2"
+												>
+													Confirmer le mot de passe
+												</label>
+												<input
+													className="w-full rounded border border-stroke bg-gray py-1 px-2 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+													type="password"
+													name="pwd2"
+													id="pwd2"
+													placeholder="Confirmer le nouveau mot de passe"
+													value={pwd2}
+													onChange={(e) => {
+														setPwd2(e.target.value);
+													}}
+													required
+												/>
+											</div>
 										</div>
 									</div>
 									<div className="flex justify-end gap-2">

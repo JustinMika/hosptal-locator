@@ -17,6 +17,9 @@ import HospitalProfil from "./hospitals/pages/HospitalProfil.tsx";
 import ALertesHospital from "./hospitals/pages/ALertesHospital.tsx";
 import UsersDashboard from "./users/pages/UsersDashboard.tsx";
 import UserProfile from "./users/pages/UserProfile.tsx";
+import Profil from "./admin/pages/Profil.tsx";
+import AddUser from "./admin/pages/AddUser.tsx";
+import LocatePatient from "./hospitals/pages/LocatePatient.tsx";
 
 const App = () => {
 	return (
@@ -66,6 +69,17 @@ const App = () => {
 					element={<ListHospital />}
 					errorElement={<PageNotFound />}
 				/>
+				<Route
+					path="/admin/dashboard/utilisateur/profil-utilisateur"
+					element={<Profil />}
+					errorElement={<PageNotFound />}
+				/>
+				<Route
+					path="/admin/dashboard/utilisateurs/ajout-utilisateurs"
+					element={<AddUser />}
+					errorElement={<PageNotFound />}
+				/>
+
 				{/* END Admin routes */}
 
 				{/* hospitals routes */}
@@ -87,6 +101,11 @@ const App = () => {
 				<Route
 					path="/hospital/dashboard/profil/"
 					element={<HospitalProfil />}
+					errorElement={<PageNotFound />}
+				/>
+				<Route
+					path="/hospital/dashboard/localisation-patient/:lat/:long/"
+					element={<LocatePatient />}
 					errorElement={<PageNotFound />}
 				/>
 				{/* END hospitals routes */}

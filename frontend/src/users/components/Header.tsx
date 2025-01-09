@@ -21,7 +21,7 @@ const Header = () => {
 		<div className="w-full z-[500] bg-white">
 			<div className={normaluser}>
 				<nav className="mx-auto w-full bg-white border-gray-200 dark:bg-gray-900">
-					<div className="w-full mx-0 flex flex-wrap items-baseline justify-between mx-auto_ p-4">
+					<div className="w-full mx-0 flex flex-wrap items-baseline justify-between mx-auto_ p-4 z-[2000]">
 						<Link to="/" className="flex items-center uppercase">
 							Hospital LOCation
 						</Link>
@@ -48,7 +48,7 @@ const Header = () => {
 
 							{isMenuUserOpen && (
 								<div
-									className={`absolute right-10 top-11 z-50 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 mt-5`}
+									className={`absolute right-10 top-11 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 mt-5 z-[2000]`}
 								>
 									<div className="px-4 py-3 text-center">
 										<span className="block text-sm text-gray-900 dark:text-white">

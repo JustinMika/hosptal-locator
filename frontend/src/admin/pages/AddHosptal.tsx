@@ -12,12 +12,8 @@ const ValidationSchema = Yup.object().shape({
 		.required("L'adresse e-mail est requise")
 		.email()
 		.min(4, "L'e-mail doit avoir min 4 caractères"),
-	latitude: Yup.number()
-		.required("La latitude est requise")
-		.min(5, "min 5 caractères"),
-	longitude: Yup.number()
-		.required("La longitude est requise")
-		.min(5, "min 5 caractères"),
+	latitude: Yup.number().required("La latitude est requise"),
+	longitude: Yup.number().required("La longitude est requise"),
 });
 
 const AddHospital = () => {
@@ -40,12 +36,12 @@ const AddHospital = () => {
 				values
 			);
 			toast.info(
-				response?.data?.message?.name ??
-					"Duplication du champ email et/ou nom de l'hopital",
+				response?.data?.message?.name ?? "Hopital ajoue avec success.",
+				// "Duplication du champ email et/ou nom de l'hopital",
 				{
-					position: "top-right",
+					position: "bottom-right",
 					autoClose: 5000,
-					hideProgressBar: true,
+					hideProgressBar: false,
 					closeOnClick: true,
 					pauseOnHover: true,
 					draggable: true,

@@ -2,12 +2,13 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const Utilisateur = require("../../models/Utilisateur");
+const User = require("../../models/Utilisateur");
 
 router.get("/", async (req, res) => {
 	try {
 		const data = await Utilisateur.findAll({
 			where: {
-				userType: "hopital",
+				userType: "hospital",
 			},
 		});
 		res.json(data);
@@ -17,11 +18,26 @@ router.get("/", async (req, res) => {
 	}
 });
 
+router.get("/:type", async (req, res) => {
+	try {
+		const { type } = req.params;
+		const users = await User.findAll({
+			where: {
+				UserType: type,
+			},
+			attributes: ["id", "pseudo", "latitude", "longitude"], // Spécifiez les colonnes à sélectionner ici
+		});
+		res.json(users);
+	} catch (error) {
+		res.status(500).json({ message: "Error fetching users", error });
+	}
+});
+
 router.post("/add-hopital/", async (req, res) => {
 	try {
 		const { pseudo, email, latitude, longitude } = req.body;
 		if (pseudo && email && latitude && longitude) {
-			const userType = "hopital";
+			const userType = "hospital";
 			const hashedPassword = await bcrypt.hash("password", 10);
 
 			const data = {

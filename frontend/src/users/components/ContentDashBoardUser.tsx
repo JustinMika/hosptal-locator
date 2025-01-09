@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../store/slice/authSlice";
+import { toast } from "react-toastify";
 
 interface ContentProps {
 	children: ReactNode;
@@ -13,8 +14,10 @@ const ContentDashBoardUser: React.FC<ContentProps> = ({ children }) => {
 	const dispatch = useDispatch();
 	useEffect(() => {
 		if (!user) {
-			const link = `/users/logout/${user ?? 0}`;
-			alert("Veuillez vous connectez de nouveau,...");
+			const link = `/users/logout/${
+				Math.ceil(Math.random() * 10000) ?? 0
+			}`;
+			toast.info("Veuillez vous connectez de nouveau,...");
 			navigator(link);
 			dispatch(logout());
 		}
